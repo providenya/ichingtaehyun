@@ -74,47 +74,98 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 카드 뽑기 화면 설정 함수
+
     function setupCardDrawingScreen() {
         cardPool.innerHTML = ''; // 기존 카드들 초기화
         drawInstruction.innerHTML = `아래 카드 중에서 <strong>${appState.cardsToDraw}장</strong>을 선택하세요.`;
 
+        const backImagePath = appState.currentDeck.deckInfo.imagePath + appState.currentDeck.deckInfo.backImage;
+
         for (let i = 0; i < appState.currentDeck.cards.length; i++) {
-            const cardBack = document.createElement('div');
-            cardBack.classList.add('card-back');
-            cardBack.addEventListener('click', handleCardSelection, { once: true }); // 한번만 클릭되도록 설정
-            cardPool.appendChild(cardBack);
+             // 1. 전체 컨테이너
+             const container = document.createElement('div');
+             container.classList.add('card-container');
+             // 각 카드 컨테이너에 고유 ID 부여 (나중에 어떤 카드를 뽑았는지 추적하기 위함)
+             container.dataset.cardIndex = i;
+
+             // 2. 뒤집히는 부분
+             const flipper = document.createElement('div');
+             flipper.classList.add('card-flipper');
+
+             // 3. 카드 뒷면
+             const back = document.createElement('img');
+             back.classList.add('card-face', 'back');
+             back.src = backImagePath;
+             back.alt = "카드 뒷면";
+
+             // 4. 카드 앞면 (미리 만들어두지만 지금은 보이지 않음)
+             const front = document.createElement('img');
+             front.classList.add('card-face', 'front');
+             // 앞면 이미지는 나중에 카드를 확정할 때 설정합니다.
+        
+             flipper.appendChild(front);
+             flipper.appendChild(back);
+             container.appendChild(flipper);
+        
+             container.addEventListener('click', handleCardSelection, { once: true });
+             cardPool.appendChild(container);
         }
     }
     
     // 결과 화면 렌더링 함수
     function renderResults() {
-        resultCardsContainer.innerHTML = ''; // 기존 결과 초기화
-        appState.drawnCards.forEach((card, index) => {
-            const position = appState.currentSpread.positions[index];
-            
-            const container = document.createElement('div');
-            container.classList.add('result-card-container');
-            
-            const positionEl = document.createElement('p');
-            positionEl.classList.add('result-card-position');
-            positionEl.textContent = `${index + 1}. ${position}`;
-            
-            const cardEl = document.createElement('div');
-            cardEl.classList.add('card-front');
-            cardEl.innerHTML = `
-                <h4>${card.name}</h4>
-                <p><small>${card.keywords.join(', ')}</small></p>
-            `;
-            // 여기에 실제 카드 이미지 태그를 추가할 수 있습니다.
-            // 예: <img src="${appState.currentDeck.deckInfo.imagePath}${card.image}" alt="${card.name}">
+    resultCardsContainer.innerHTML = ''; 
 
-            container.appendChild(positionEl);
-            container.appendChild(cardEl);
-            resultCardsContainer.appendChild(container);
-        });
+    appState.drawnCards.forEach((card, index) => {
+        const position = appState.currentSpread.positions[index];
+        const imagePath = appState.currentDeck.deckInfo.imagePath + card.image;
+        const backImagePath = appState.currentDeck.deckInfo.imagePath + appState.currentDeck.deckInfo.backImage;
+
+        // 결과 카드 컨테이너
+        const resultContainer = document.createElement('div');
+        resultContainer.classList.add('result-card-container');
         
-        showScreen('result');
-    }
+        const positionEl = document.createElement('p');
+        positionEl.classList.add('result-card-position');
+        positionEl.textContent = `${index + 1}. ${position}`;
+        
+        // --- 플립 구조 생성 ---
+        const cardContainer = document.createElement('div');
+        cardContainer.classList.add('card-container');
+
+        const flipper = document.createElement('div');
+        flipper.classList.add('card-flipper');
+
+        // 뒷면
+        const back = document.createElement('img');
+        back.classList.add('card-face', 'back');
+        back.src = backImagePath;
+
+        // 앞면 (결과 텍스트 포함)
+        const front = document.createElement('div');
+        front.classList.add('card-face', 'front');
+        front.innerHTML = `
+            <img src="${imagePath}" alt="${card.name}">
+            <h4>${card.name}</h4>
+            <p><small>${card.keywords.join(', ')}</small></p>
+        `;
+        
+        flipper.appendChild(front);
+        flipper.appendChild(back);
+        cardContainer.appendChild(flipper);
+
+        resultContainer.appendChild(positionEl);
+        resultContainer.appendChild(cardContainer);
+        resultCardsContainer.appendChild(resultContainer);
+        
+        // 시간차를 두고 flip 애니메이션 적용
+        setTimeout(() => {
+            cardContainer.classList.add('flipped');
+        }, 100 * (index + 1)); // 0.1초 간격으로 착착착 뒤집힘
+    });
+    
+    showScreen('result');
+}
     
     // 프로그램 초기화/재시작 함수
     function resetApp() {
@@ -176,27 +227,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // 카드 선택 처리
-    function handleCardSelection(e) {
-        // 이미 선택된 카드는 스타일을 변경하여 피드백 제공
-        e.target.style.backgroundColor = 'var(--primary-color)';
-        e.target.style.transform = 'translateY(-10px)';
-        e.target.style.cursor = 'default';
-        
-        // 섞인 덱에서 맨 위 카드를 하나 뽑아 저장
-        const drawnCard = appState.shuffledDeck.pop();
-        appState.drawnCards.push(drawnCard);
-        
-        appState.cardsToDraw--;
-        drawInstruction.innerHTML = `아래 카드 중에서 <strong>${appState.cardsToDraw}장</strong>을 더 선택하세요.`;
+function handleCardSelection(e) {
+    const selectedCardContainer = e.currentTarget;
+    
+    // 1. 섞인 덱에서 카드를 하나 뽑아 정보를 가져옵니다.
+    const drawnCard = appState.shuffledDeck.pop();
+    appState.drawnCards.push(drawnCard);
+    
+    // 2. 클릭된 카드의 앞면 이미지 소스를 설정합니다.
+    const frontFace = selectedCardContainer.querySelector('.front');
+    frontFace.src = appState.currentDeck.deckInfo.imagePath + drawnCard.image;
+    
+    // 3. 'flipped' 클래스를 추가하여 CSS 애니메이션을 발동시킵니다.
+    selectedCardContainer.classList.add('flipped');
+    
+    // 클릭된 카드 외 다른 카드들은 클릭 못하게 잠시 막음 (선택)
+    cardPool.style.pointerEvents = 'none';
+    
+    appState.cardsToDraw--;
+
+    setTimeout(() => {
+        // 다음 카드를 뽑으라는 안내 업데이트
+        drawInstruction.innerHTML = appState.cardsToDraw > 0 ?
+            `<strong>${appState.cardsToDraw}장</strong>을 더 선택하세요.` :
+            "결과를 확인합니다...";
+            
+        // 다른 카드들 다시 클릭 가능하게 풀어줌
+        cardPool.style.pointerEvents = 'auto';
 
         if (appState.cardsToDraw === 0) {
             console.log("선택 완료:", appState.drawnCards);
-            // 모든 카드를 선택했으면 결과 표시
+            // 모든 카드를 선택했으면 1.5초 후 결과 표시
             setTimeout(() => {
                 renderResults();
-            }, 500); // 잠시 후 결과 화면으로 전환
+            }, 1500); 
         }
-    }
+    }, 800); // 0.8초(플립 시간 + 약간의 텀) 후에 다음 동작 진행
+}
     
     // 다시 시작 버튼
     restartButton.addEventListener('click', resetApp);
