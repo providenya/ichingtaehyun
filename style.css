@@ -1,0 +1,95 @@
+/* 기본 스타일 및 테마 */
+:root {
+    --bg-color: #1a1a2e; --primary-color: #e94560; --secondary-color: #16213e;
+    --font-color: #e0e0e0; --card-bg: #0f3460; --card-width-small: 90px;
+    --card-height-small: calc(var(--card-width-small) * 1.5); --card-width-large: 160px;
+    --card-height-large: calc(var(--card-width-large) * 1.5);
+}
+body { background-color: var(--bg-color); color: var(--font-color); font-family: 'Malgun Gothic', sans-serif; margin: 0; text-align: center; }
+header, footer { background-color: var(--secondary-color); padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+h1, h2 { color: var(--primary-color); }
+.screen { display: none; padding: 2rem; animation: fadeIn 0.5s; position: relative; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 버튼 스타일 (완벽, 수정 없음) */
+.button { background-color: var(--card-bg); color: var(--font-color); border: 1px solid var(--primary-color); padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background-color 0.3s; margin-bottom: 1rem; }
+.button:hover { background-color: var(--primary-color); }
+.spread-button, .draw-method-button { width: 280px; }
+.back-button, .top-controls .button, #set-card-count-button { width: auto; margin-bottom: 0; }
+.back-button { position: absolute; top: 1.5rem; left: 1.5rem; }
+#set-card-count-button { margin-left: 0.5rem; }
+.action-button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+.action-button:hover { background-color: #c33c51; }
+.action-button:disabled { background-color: #555; cursor: not-allowed; }
+
+/* 덱 선택 화면 */
+#deck-list { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+.deck-card { background-color: var(--card-bg); border: 2px solid var(--primary-color); border-radius: 10px; padding: 1.5rem; width: 200px; cursor: pointer; transition: transform 0.3s; }
+.deck-card:hover { transform: translateY(-10px); }
+
+/* 스프레드, 뽑기방식 선택 */
+#spread-list, #draw-method-list { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+
+/* 나만의 스프레드 생성기 */
+#layout-preview { position: relative; height: 600px; background-color: var(--secondary-color); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; border-radius: 10px; margin: 2rem auto; max-width: 1000px; }
+.draggable-card { position: absolute; width: var(--card-width-large); height: calc(var(--card-height-large) + 60px); background-color: rgba(0,0,0,0.2); border: 2px dashed var(--primary-color); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 2rem; color: var(--primary-color); cursor: grab; box-sizing: border-box; }
+.draggable-card.dragging { opacity: 0.5; cursor: grabbing; }
+
+/* 수동/자동 뽑기 */
+.top-controls { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
+#card-pool { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+#card-pool .card-container { width: var(--card-width-small); height: var(--card-height-small); transition: transform 0.3s; cursor: pointer; }
+#card-pool .card-container.selected { transform: translateY(-20px); }
+#card-pool .card-container img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
+#auto-draw-buttons, #continuous-draw-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+.auto-draw-button { width: var(--card-width-small); height: var(--card-height-small); }
+
+/* 연속 뽑기 결과 */
+#continuous-result-area { display: flex; flex-direction: column-reverse; gap: 2rem; }
+.continuous-result-set { border-top: 2px solid var(--primary-color); padding-top: 2rem; }
+.continuous-result-cards { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; align-items: flex-start; }
+#continuous-result-area .result-card-container { width: var(--card-width-small); }
+#continuous-result-area .result-card-position { font-size: 0.8rem; }
+#continuous-result-area .card-image-wrapper { height: var(--card-height-small); }
+#continuous-result-area .card-image-wrapper img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
+#continuous-result-area .card-text-wrapper h4 { font-size: 0.8rem; margin-top: 0.5rem; }
+
+/* --- 최종 결과 화면 스타일 --- */
+.result-view { display: none; }
+.result-view.active { display: block; }
+.result-card-position { font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem; } /* 위치 텍스트 공통 스타일 */
+.card-flipper-wrapper { perspective: 1000px; margin-bottom: 0.5rem; }
+.card-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+.card-flipper-wrapper.flipped .card-flipper { transform: rotateY(180deg); }
+.card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; overflow: hidden; }
+.card-face img { width: 100%; height: 100%; object-fit: cover; }
+.card-face.front { transform: rotateY(180deg); background-color: var(--secondary-color); }
+.card-text-wrapper { text-align: center; }
+.card-text-wrapper h4 { font-size: 0.9rem; margin: 0.5rem 0 0.3rem 0; color: var(--primary-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-text-wrapper p { font-size: 0.8rem; margin: 0; }
+
+/* 1. 기본 결과 뷰 (원, 쓰리 카드) */
+#result-default-view.active { display: flex; justify-content: center; align-items: flex-start; gap: 1.5rem; padding: 2rem 0; }
+#result-default-view .result-card-container { width: var(--card-width-large); }
+#result-default-view .card-flipper-wrapper { height: var(--card-height-large); }
+
+/* 2. 켈틱 크로스 결과 뷰 */
+#result-celtic-view { position: relative; max-width: 1000px; height: 700px; margin: 0 auto; }
+#result-celtic-view .result-card-container { position: absolute; width: var(--card-width-large); }
+#result-celtic-view .card-flipper-wrapper { height: var(--card-height-large); }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="1"] { top: 38%; left: 38%; z-index: 1; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="2"] { top: 38%; left: 38%; transform: rotate(90deg); z-index: 2; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="3"] { top: 75%; left: 38%; z-index: 1; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="4"] { top: 38%; left: 15%; z-index: 1; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="5"] { top: 1%; left: 38%; z-index: 1; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="6"] { top: 38%; left: 61%; z-index: 1; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="7"] { top: 75%; left: 80%; z-index: 3; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="8"] { top: 50%; left: 80%; z-index: 3; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="9"] { top: 25%; left: 80%; z-index: 3; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="10"]{ top: 0%; left: 80%; z-index: 3; }
+
+/* 3. 커스텀 결과 뷰 */
+#result-custom-view { position: relative; max-width: 1000px; height: 700px; margin: 0 auto; }
+#result-custom-view .result-card-container { position: absolute; width: var(--card-width-large); }
+#result-custom-view .card-flipper-wrapper { height: var(--card-height-large); }
