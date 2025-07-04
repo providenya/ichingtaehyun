@@ -13,90 +13,49 @@
     </header>
 
     <main id="app">
-        <!-- (다른 화면들은 이전과 동일) -->
+        <!-- 화면 1 ~ 5 생략 (이전과 동일) -->
+        <div id="deck-selection-screen" class="screen active"><h2>1. 덱을 선택하세요</h2><div id="deck-list"><div class="deck-card" data-deck-id="universal_waite"><h3>유니버설 웨이트</h3><p>샘플 덱입니다.</p></div></div></div>
+        <div id="spread-selection-screen" class="screen"><button class="back-button button" data-target="deckSelection">← 덱 선택으로</button><h2>2. 스프레드를 선택하세요</h2><div id="spread-list"><button class="spread-button button" data-spread-type="one-card">원 카드 (1장)</button><button class="spread-button button" data-spread-type="three-card">쓰리 카드 (3장)</button><button class="spread-button button" data-spread-type="celtic-cross">켈틱 크로스 (10장)</button><button class="spread-button button" data-spread-type="custom">✨ 나만의 스프레드 만들기</button></div></div>
+        <div id="custom-spread-creator-screen" class="screen"><button class="back-button button" data-target="spreadSelection">← 스프레드 선택으로</button><h2>✨ 나만의 스프레드 만들기</h2><div class="creator-controls"><label for="num-cards-input">1. 뽑을 카드 수:</label><input type="number" id="num-cards-input" min="1" max="20" value="3"><button id="set-card-count-button" class="button">설정</button></div><p class="guide-text">숫자 카드를 드래그하여 원하는 대로 배치하세요.</p><div id="layout-preview"></div><button id="start-custom-spread-button" class="action-button">이 스프레드로 점보기</button></div>
+        <div id="draw-method-screen" class="screen"><button class="back-button button" data-target="spreadSelection">← 스프레드 선택으로</button><h2>3. 뽑기 방식을 선택하세요</h2><div id="draw-method-list"><button class="draw-method-button button" data-mode="manual">수동 뽑기</button><button class="draw-method-button button" data-mode="auto">자동 뽑기</button><button class="draw-method-button button" data-mode="continuous">연속 뽑기</button></div></div>
+        <div id="manual-drawing-screen" class="screen"><div class="top-controls"><button class="back-button button" data-target="drawMethod">← 방식 선택으로</button><button id="manual-reset-button" class="button">초기화</button><button id="manual-confirm-button" class="action-button">결과 확인</button></div><h2 id="manual-draw-title"></h2><div id="card-pool"></div></div>
 
-        <!-- 화면 1 ~ 6 생략 -->
-        <div id="deck-selection-screen" class="screen active">
-            <h2>1. 덱을 선택하세요</h2>
-            <div id="deck-list">
-                <div class="deck-card" data-deck-id="universal_waite">
-                    <h3>유니버설 웨이트</h3>
-                    <p>샘플 덱입니다.</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="spread-selection-screen" class="screen">
-            <button class="back-button button" data-target="deckSelection">← 덱 선택으로</button>
-            <h2>2. 스프레드를 선택하세요</h2>
-            <div id="spread-list">
-                <button class="spread-button button" data-spread-type="one-card">원 카드 (1장)</button>
-                <button class="spread-button button" data-spread-type="three-card">쓰리 카드 (3장)</button>
-                <button class="spread-button button" data-spread-type="celtic-cross">켈틱 크로스 (10장)</button>
-                <button class="spread-button button" data-spread-type="custom">✨ 나만의 스프레드 만들기</button>
-            </div>
-        </div>
-
-        <div id="custom-spread-creator-screen" class="screen">
-            <button class="back-button button" data-target="spreadSelection">← 스프레드 선택으로</button>
-            <h2>✨ 나만의 스프레드 만들기</h2>
-            <div class="creator-controls">
-                <label for="num-cards-input">1. 뽑을 카드 수:</label>
-                <input type="number" id="num-cards-input" min="1" max="20" value="3">
-                <button id="set-card-count-button" class="button">설정</button>
-            </div>
-            <p class="guide-text">숫자 카드를 드래그하여 원하는 대로 배치하세요.</p>
-            <div id="layout-preview"></div>
-            <button id="start-custom-spread-button" class="action-button">이 스프레드로 점보기</button>
-        </div>
-
-        <div id="draw-method-screen" class="screen">
-            <button class="back-button button" data-target="spreadSelection">← 스프레드 선택으로</button>
-            <h2>3. 뽑기 방식을 선택하세요</h2>
-            <div id="draw-method-list">
-                <button class="draw-method-button button" data-mode="manual">수동 뽑기</button>
-                <button class="draw-method-button button" data-mode="auto">자동 뽑기</button>
-                <button class="draw-method-button button" data-mode="continuous">연속 뽑기</button>
-            </div>
-        </div>
-        
-        <div id="manual-drawing-screen" class="screen">
-            <div class="top-controls">
-                <button class="back-button button" data-target="drawMethod">← 방식 선택으로</button>
-                <button id="manual-reset-button" class="button">초기화</button>
-                <button id="manual-confirm-button" class="action-button">결과 확인</button>
-            </div>
-            <h2 id="manual-draw-title"></h2>
-            <div id="card-pool"></div>
-        </div>
-        
+        <!-- 화면 6: 자동 뽑기 -->
         <div id="auto-drawing-screen" class="screen">
             <div class="top-controls">
                  <button class="back-button button" data-target="drawMethod">← 방식 선택으로</button>
                  <button id="auto-reset-button" class="button">초기화</button>
             </div>
             <h2 id="auto-draw-title"></h2>
-            <div id="auto-draw-buttons"></div>
-            <div id="continuous-result-area"></div>
+            <div id="auto-draw-buttons">
+                <!-- 자동 뽑기 버튼이 여기에 생성됩니다. -->
+            </div>
         </div>
 
-        <!-- 화면 7: 최종 결과 보기 (구조 변경) -->
+        <!-- 여기가 수정된 부분입니다: 연속 뽑기 화면 추가 -->
+        <!-- 화면 6-1: 연속 뽑기 -->
+        <div id="continuous-drawing-screen" class="screen">
+            <div class="top-controls">
+                 <button class="back-button button" data-target="drawMethod">← 방식 선택으로</button>
+                 <button id="continuous-reset-button" class="button">다시 뽑기</button>
+            </div>
+            <h2 id="continuous-draw-title"></h2>
+            <div id="continuous-draw-buttons">
+                <!-- 연속 뽑기 버튼이 여기에 생성됩니다. -->
+            </div>
+            <div id="continuous-result-area">
+                <!-- 연속 뽑기 결과가 여기에 누적됩니다. -->
+            </div>
+        </div>
+
+
+        <!-- 화면 7: 최종 결과 보기 -->
         <div id="result-screen" class="screen">
             <button class="back-button button" data-target="spreadSelection">← 스프레드 선택으로</button>
             <h2>타로 리딩 결과</h2>
-            
-            <!-- 결과 표시 영역 -->
-            <div id="result-display-area">
-                <!-- 기본 스프레드 결과가 여기에 표시됨 -->
-                <div id="result-cards-default"></div>
-
-                <!-- 스플릿 뷰 (커스텀, 켈틱) -->
-                <div id="result-split-view">
-                    <div id="result-spread-view"></div>
-                    <div id="result-detail-view"></div>
-                </div>
+            <div id="result-cards">
+                <!-- JS가 여기에 결과 카드를 채워넣을 것입니다. -->
             </div>
-
             <button id="restart-button" class="action-button">처음으로 돌아가기</button>
         </div>
     </main>
