@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appState = {
         currentDeck: null, currentSpread: null, shuffledDeck: [],
         manuallySelectedCards: new Set(), autoDrawnCards: [], drawMode: null,
-        continuousRound: 0, customLayout: [],
+        continuousRound: 0, customLayout: [], drawnCardsForDetail: []
     };
 
     const SPREADS = {
@@ -13,30 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const screens = {};
-    document.querySelectorAll('.screen').forEach(s => {
-        const key = s.id.replace(/-(\w)/g, (m, l) => l.toUpperCase()).replace('Screen', '');
-        screens[key] = s;
-    });
+    document.querySelectorAll('.screen').forEach(s => { const key = s.id.replace(/-(\w)/g, (m, l) => l.toUpperCase()).replace('Screen', ''); screens[key] = s; });
     
     const elements = {
-        deckList: document.getElementById('deck-list'),
-        spreadList: document.getElementById('spread-list'),
-        drawMethodList: document.getElementById('draw-method-list'),
+        deckList: document.getElementById('deck-list'), spreadList: document.getElementById('spread-list'), drawMethodList: document.getElementById('draw-method-list'),
         backButtons: document.querySelectorAll('.back-button'),
-        numCardsInput: document.getElementById('num-cards-input'),
-        setCardCountButton: document.getElementById('set-card-count-button'),
-        layoutPreview: document.getElementById('layout-preview'),
-        startCustomSpreadButton: document.getElementById('start-custom-spread-button'),
-        manualDrawTitle: document.getElementById('manual-draw-title'),
-        cardPool: document.getElementById('card-pool'),
-        manualConfirmButton: document.getElementById('manual-confirm-button'),
-        manualResetButton: document.getElementById('manual-reset-button'),
-        autoDrawTitle: document.getElementById('auto-draw-title'),
-        autoDrawButtons: document.getElementById('auto-draw-buttons'),
+        numCardsInput: document.getElementById('num-cards-input'), setCardCountButton: document.getElementById('set-card-count-button'),
+        layoutPreview: document.getElementById('layout-preview'), startCustomSpreadButton: document.getElementById('start-custom-spread-button'),
+        manualDrawTitle: document.getElementById('manual-draw-title'), cardPool: document.getElementById('card-pool'),
+        manualConfirmButton: document.getElementById('manual-confirm-button'), manualResetButton: document.getElementById('manual-reset-button'),
+        autoDrawTitle: document.getElementById('auto-draw-title'), autoDrawButtons: document.getElementById('auto-draw-buttons'),
         autoResetButton: document.getElementById('auto-reset-button'),
         continuousResultArea: document.getElementById('continuous-result-area'),
-        resultCards: document.getElementById('result-cards'),
         restartButton: document.getElementById('restart-button'),
+        // 결과창
+        resultDisplayArea: document.getElementById('result-display-area'),
+        resultCardsDefault: document.getElementById('result-cards-default'),
+        resultSplitView: document.getElementById('result-split-view'),
+        resultSpreadView: document.getElementById('result-spread-view'),
+        resultDetailView: document.getElementById('result-detail-view'),
     };
 
     // --- 2. 핵심 로직 함수 ---
@@ -83,9 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            // --- 여기가 수정된 부분입니다 ---
-            button.className = 'auto-draw-button button'; // .button 클래스 추가
-            button.textContent = i + 1; button.dataset.index = i;
+            button.className = 'auto-draw-button button'; button.textContent = i + 1; button.dataset.index = i;
             elements.autoDrawButtons.appendChild(button);
         }
         showScreen('autoDrawing');
@@ -93,74 +86,130 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- 4. 결과 렌더링 함수 ---
     function renderFinalResults(drawnCards) {
-        elements.resultCards.innerHTML = '';
-        const isCustom = appState.currentSpread.name === "나만의 스프레드";
-        const isCeltic = appState.currentSpread.name === "켈틱 크로스";
+        appState.drawnCardsForDetail = drawnCards;
+        const isSplitView = appState.currentSpread.name === "나만의 스프레드" || appState.currentSpread.name === "켈틱 크로스";
         
-        elements.resultCards.className = (isCustom || isCeltic) ? 'absolute-layout' : '';
-        if(isCeltic) elements.resultCards.classList.add('celtic-cross-layout');
+        elements.resultCardsDefault.style.display = isSplitView ? 'none' : 'flex';
+        elements.resultSplitView.style.display = isSplitView ? 'flex' : 'none';
 
-        drawnCards.forEach((card, index) => {
-            const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
-            const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
-            const backImagePath = appState.currentDeck.deckInfo.imagePath + appState.currentDeck.deckInfo.backImage;
-            
-            const resultContainer = document.createElement('div');
-            resultContainer.className = 'result-card-container';
-            resultContainer.dataset.position = index + 1;
-
-            resultContainer.innerHTML = `
-                <p class="result-card-position">${position}</p>
-                <div class="card-flipper-wrapper">
-                    <div class="card-flipper">
-                        <div class="card-face back"><img src="${backImagePath}" alt="카드 뒷면"></div>
-                        <div class="card-face front">${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : ''}</div>
-                    </div>
-                </div>
-                <div class="card-text-wrapper">
-                    <h4>${card.name}</h4>
-                    <p><small>${card.keywords.join(', ')}</small></p>
-                </div>`;
-            
-            elements.resultCards.appendChild(resultContainer);
-
-            if (isCustom && appState.customLayout[index]) {
-                const layout = appState.customLayout[index];
-                resultContainer.style.left = `calc(${layout.xPercent}% - ${getComputedStyle(resultContainer).width.replace('px','')/2}px)`;
-                resultContainer.style.top = `calc(${layout.yPercent}% - ${getComputedStyle(resultContainer).height.replace('px','')/2}px)`;
-            }
-
-            setTimeout(() => resultContainer.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
-        });
+        if (isSplitView) {
+            renderSplitView(drawnCards);
+        } else {
+            renderDefaultView(drawnCards);
+        }
         showScreen('result');
     }
 
-    function renderContinuousResult() {
-        const resultHTML = appState.autoDrawnCards.map((card, index) => {
-             const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
-             const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
-             return `<div class="result-card-container">
-                        <p class="result-card-position">${position}</p>
-                        <div class="card-image-wrapper card-container">
-                           ${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}
-                        </div>
-                        <div class="card-text-wrapper"><h4>${card.name}</h4></div>
-                     </div>`;
-        }).join('');
-        
-        const setWrapper = document.createElement('div');
-        setWrapper.className = 'continuous-result-set';
-        setWrapper.innerHTML = `<h3>${appState.continuousRound}번째 결과</h3><div class="continuous-result-cards">${resultHTML}</div>`;
-        elements.continuousResultArea.appendChild(setWrapper);
-        setWrapper.scrollIntoView({ behavior: 'smooth' });
+    function renderDefaultView(drawnCards) {
+        elements.resultCardsDefault.innerHTML = '';
+        drawnCards.forEach((card, index) => {
+            const resultContainer = createResultCard(card, index);
+            elements.resultCardsDefault.appendChild(resultContainer);
+            setTimeout(() => resultContainer.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
+        });
     }
 
-    // --- 5. 이벤트 핸들러 ---
+    function renderSplitView(drawnCards) {
+        const spreadView = elements.resultSpreadView;
+        spreadView.innerHTML = '';
+        
+        const isCeltic = appState.currentSpread.name === "켈틱 크로스";
+        if (isCeltic) {
+            spreadView.classList.add('celtic-cross-layout');
+        } else {
+            spreadView.classList.remove('celtic-cross-layout');
+        }
+
+        drawnCards.forEach((card, index) => {
+            const resultContainer = createResultCard(card, index);
+            resultContainer.dataset.cardIndex = index; // 클릭 이벤트용 인덱스
+            spreadView.appendChild(resultContainer);
+            
+            if (!isCeltic && appState.customLayout[index]) {
+                const layout = appState.customLayout[index];
+                resultContainer.style.left = `${layout.xPercent}%`;
+                resultContainer.style.top = `${layout.yPercent}%`;
+                resultContainer.style.transform = `translate(-50%, -50%)`; // 중심점 맞추기
+            }
+            setTimeout(() => resultContainer.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
+        });
+        updateDetailView(-1); // 초기 상태로 설정
+    }
+
+    function updateDetailView(cardIndex) {
+        const detailView = elements.resultDetailView;
+        if (cardIndex === -1) {
+            detailView.innerHTML = `<p>왼쪽의 카드를 선택하여 자세한 정보를 확인하세요.</p>`;
+            return;
+        }
+        
+        const card = appState.drawnCardsForDetail[cardIndex];
+        const position = appState.currentSpread.positions[cardIndex] || `위치 ${cardIndex + 1}`;
+        const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
+
+        detailView.innerHTML = `
+            <div class="card-image-wrapper">
+                ${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}
+            </div>
+            <div class="card-text-wrapper">
+                <h4>${position}: ${card.name}</h4>
+                <p>${card.keywords.join(', ')}</p>
+            </div>`;
+    }
+
+    function createResultCard(card, index) {
+        const position = appState.currentSpread.positions[index] || `위치 ${index + 1}`;
+        const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
+        const backImagePath = appState.currentDeck.deckInfo.imagePath + appState.currentDeck.deckInfo.backImage;
+        
+        const resultContainer = document.createElement('div');
+        resultContainer.className = 'result-card-container';
+        resultContainer.dataset.position = index + 1;
+        resultContainer.innerHTML = `
+            <div class="card-flipper-wrapper">
+                <div class="card-flipper">
+                    <div class="card-face back"><img src="${backImagePath}" alt="카드 뒷면"></div>
+                    <div class="card-face front">${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : ''}</div>
+                </div>
+            </div>
+            <div class="card-text-wrapper">
+                <h4>${position}: ${card.name}</h4>
+                <p><small>${card.keywords.join(', ')}</small></p>
+            </div>`;
+        return resultContainer;
+    }
+    
+    // --- 이벤트 핸들러 추가/수정 ---
+    elements.resultSpreadView.addEventListener('click', (e) => {
+        const cardContainer = e.target.closest('.result-card-container');
+        if (!cardContainer) return;
+
+        // 선택 효과
+        elements.resultSpreadView.querySelectorAll('.card-flipper-wrapper').forEach(el => el.classList.remove('selected'));
+        cardContainer.querySelector('.card-flipper-wrapper').classList.add('selected');
+        
+        const cardIndex = parseInt(cardContainer.dataset.cardIndex, 10);
+        updateDetailView(cardIndex);
+    });
+
+    elements.startCustomSpreadButton.addEventListener('click', () => {
+        const cards = elements.layoutPreview.querySelectorAll('.draggable-card');
+        const previewRect = elements.layoutPreview.getBoundingClientRect();
+        appState.customLayout = Array.from(cards).sort((a,b) => a.dataset.id - b.dataset.id).map(c => {
+            const cardRect = c.getBoundingClientRect();
+            const xPercent = ((cardRect.left - previewRect.left + cardRect.width / 2) / previewRect.width) * 100;
+            const yPercent = ((cardRect.top - previewRect.top + cardRect.height / 2) / previewRect.height) * 100;
+            return { xPercent, yPercent };
+        });
+        appState.currentSpread = { name: "나만의 스프레드", cards_to_draw: cards.length, positions: Array.from({length: cards.length}, (_, i) => `위치 ${i+1}`) };
+        showScreen('drawMethod');
+    });
+
+    // (이하 다른 이벤트 핸들러들은 이전과 동일)
     elements.deckList.addEventListener('click', async (e) => {
         const el = e.target.closest('.deck-card');
         if (el && await loadDeck(el.dataset.deckId)) showScreen('spreadSelection');
     });
-    
     elements.spreadList.addEventListener('click', (e) => {
         const el = e.target.closest('.spread-button');
         if (!el) return;
@@ -173,91 +222,19 @@ document.addEventListener('DOMContentLoaded', () => {
             showScreen('drawMethod');
         }
     });
-
     elements.backButtons.forEach(b => b.addEventListener('click', () => showScreen(b.dataset.target)));
     elements.setCardCountButton.addEventListener('click', () => setupCustomSpreadCreator(parseInt(elements.numCardsInput.value)));
-    
     let draggedItem = null, offsetX, offsetY;
     const GRID_SIZE = 20;
-    elements.layoutPreview.addEventListener('dragstart', e => {
-        draggedItem = e.target;
-        offsetX = e.clientX - draggedItem.getBoundingClientRect().left;
-        offsetY = e.clientY - draggedItem.getBoundingClientRect().top;
-        setTimeout(() => e.target.classList.add('dragging'), 0);
-    });
+    elements.layoutPreview.addEventListener('dragstart', e => { draggedItem = e.target; offsetX = e.clientX - draggedItem.getBoundingClientRect().left; offsetY = e.clientY - draggedItem.getBoundingClientRect().top; setTimeout(() => e.target.classList.add('dragging'), 0); });
     elements.layoutPreview.addEventListener('dragend', e => e.target.classList.remove('dragging'));
     elements.layoutPreview.addEventListener('dragover', e => e.preventDefault());
-    elements.layoutPreview.addEventListener('drop', e => {
-        e.preventDefault();
-        if(draggedItem) {
-            const rect = elements.layoutPreview.getBoundingClientRect();
-            let x = e.clientX - rect.left - offsetX;
-            let y = e.clientY - rect.top - offsetY;
-            draggedItem.style.left = `${Math.round(x / GRID_SIZE) * GRID_SIZE}px`;
-            draggedItem.style.top = `${Math.round(y / GRID_SIZE) * GRID_SIZE}px`;
-        }
-    });
-    
-    // --- 여기가 수정된 부분입니다 ---
-    elements.startCustomSpreadButton.addEventListener('click', () => {
-        const cards = elements.layoutPreview.querySelectorAll('.draggable-card');
-        const previewRect = elements.layoutPreview.getBoundingClientRect();
-
-        appState.customLayout = Array.from(cards).sort((a, b) => a.dataset.id - b.dataset.id).map(c => {
-            const cardRect = c.getBoundingClientRect();
-            // 배치판 내부에서의 상대적인 위치를 %로 저장
-            const xPercent = ((cardRect.left - previewRect.left + cardRect.width / 2) / previewRect.width) * 100;
-            const yPercent = ((cardRect.top - previewRect.top + cardRect.height / 2) / previewRect.height) * 100;
-            return { xPercent, yPercent };
-        });
-
-        appState.currentSpread = { name: "나만의 스프레드", cards_to_draw: cards.length, positions: Array.from({length: cards.length}, (_, i) => `위치 ${i+1}`) };
-        showScreen('drawMethod');
-    });
-
-    elements.drawMethodList.addEventListener('click', (e) => {
-        const el = e.target.closest('.draw-method-button');
-        if (!el) return;
-        appState.drawMode = el.dataset.mode;
-        if (appState.drawMode === 'manual') setupManualDrawingScreen();
-        else setupAutoDrawingScreen();
-    });
-
-    elements.cardPool.addEventListener('click', (e) => {
-        const el = e.target.closest('.card-container');
-        if (!el) return;
-        const index = el.dataset.cardIndex;
-        if (appState.manuallySelectedCards.has(index)) {
-            appState.manuallySelectedCards.delete(index);
-            el.classList.remove('selected');
-        } else {
-            if (appState.manuallySelectedCards.size < appState.currentSpread.cards_to_draw) {
-                appState.manuallySelectedCards.add(index);
-                el.classList.add('selected');
-            }
-        }
-        elements.manualConfirmButton.disabled = appState.manuallySelectedCards.size !== appState.currentSpread.cards_to_draw;
-    });
-
+    elements.layoutPreview.addEventListener('drop', e => { e.preventDefault(); if(draggedItem) { const rect = elements.layoutPreview.getBoundingClientRect(); let x = e.clientX - rect.left - offsetX; let y = e.clientY - rect.top - offsetY; draggedItem.style.left = `${Math.round(x / GRID_SIZE) * GRID_SIZE}px`; draggedItem.style.top = `${Math.round(y / GRID_SIZE) * GRID_SIZE}px`; }});
+    elements.drawMethodList.addEventListener('click', (e) => { const el = e.target.closest('.draw-method-button'); if (!el) return; appState.drawMode = el.dataset.mode; if (appState.drawMode === 'manual') setupManualDrawingScreen(); else setupAutoDrawingScreen(); });
+    elements.cardPool.addEventListener('click', (e) => { const el = e.target.closest('.card-container'); if (!el) return; const index = el.dataset.cardIndex; if (appState.manuallySelectedCards.has(index)) { appState.manuallySelectedCards.delete(index); el.classList.remove('selected'); } else { if (appState.manuallySelectedCards.size < appState.currentSpread.cards_to_draw) { appState.manuallySelectedCards.add(index); el.classList.add('selected'); } } elements.manualConfirmButton.disabled = appState.manuallySelectedCards.size !== appState.currentSpread.cards_to_draw; });
     elements.manualResetButton.addEventListener('click', setupManualDrawingScreen);
-    elements.manualConfirmButton.addEventListener('click', () => {
-        const drawnCards = Array.from(appState.manuallySelectedCards).map(i => appState.shuffledDeck[i]);
-        renderFinalResults(drawnCards);
-    });
-
-    elements.autoDrawButtons.addEventListener('click', (e) => {
-        const button = e.target.closest('.auto-draw-button');
-        if (!button || button.disabled) return;
-        button.disabled = true;
-        const card = appState.shuffledDeck.pop();
-        appState.autoDrawnCards[button.dataset.index] = card;
-        const allDrawn = elements.autoDrawButtons.querySelectorAll('.auto-draw-button:not(:disabled)').length === 0;
-        if (allDrawn) {
-            if (appState.drawMode === 'auto') setTimeout(() => renderFinalResults(appState.autoDrawnCards), 500);
-            else renderContinuousResult();
-        }
-    });
-
+    elements.manualConfirmButton.addEventListener('click', () => { const drawnCards = Array.from(appState.manuallySelectedCards).map(i => appState.shuffledDeck[i]); renderFinalResults(drawnCards); });
+    elements.autoDrawButtons.addEventListener('click', (e) => { const button = e.target.closest('.auto-draw-button'); if (!button || button.disabled) return; button.disabled = true; const card = appState.shuffledDeck.pop(); appState.autoDrawnCards[button.dataset.index] = card; const allDrawn = elements.autoDrawButtons.querySelectorAll('.auto-draw-button:not(:disabled)').length === 0; if (allDrawn) { if (appState.drawMode === 'auto') setTimeout(() => renderFinalResults(appState.autoDrawnCards), 500); else renderContinuousResult(); } });
     elements.autoResetButton.addEventListener('click', setupAutoDrawingScreen);
     elements.restartButton.addEventListener('click', resetAll);
     
