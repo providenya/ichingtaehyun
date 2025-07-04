@@ -13,14 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadDeck(deckId) { try { const r = await fetch(`assets/data/${deckId}.json`); if (!r.ok) throw Error('덱 데이터 로드 실패'); appState.currentDeck=await r.json(); return true; } catch (e) { alert(e.message); return false; } }
 
     /**
-     * --- 여기가 수정된 부분입니다 (동적 폰트 조절) ---
+     * --- 여기가 추가된 부분입니다 (동적 폰트 조절) ---
      * 텍스트가 부모 요소를 넘치면 폰트 크기를 자동으로 줄이는 함수
      * @param {HTMLElement} element - 폰트 크기를 조절할 텍스트 요소 (h4)
      */
     function adjustFontSize(element) {
+        // 폰트 크기를 초기화해야 매번 정확하게 계산됨
+        element.style.fontSize = ''; 
         let currentSize = parseFloat(getComputedStyle(element).fontSize);
-        while (element.scrollWidth > element.clientWidth && currentSize > 8) { // 최소 8px까지
-            currentSize -= 1; // 1px씩 줄임
+        // 부모 요소의 너비보다 글자의 실제 너비가 더 크면 루프 실행
+        while (element.scrollWidth > element.clientWidth && currentSize > 8) { // 최소 8px
+            currentSize -= 0.5; // 0.5px씩 미세하게 줄임
             element.style.fontSize = `${currentSize}px`;
         }
     }
@@ -57,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.autoDrawTitle.textContent = `${appState.currentSpread.name} (${appState.currentSpread.cards_to_draw}장)`;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button button'; button.textContent = i + 1; button.dataset.index = i;
+            button.className = 'auto-draw-button'; // 'button' 클래스 제거하여 비활성화 스타일 복구
+            button.textContent = i + 1; button.dataset.index = i;
             elements.autoDrawButtons.appendChild(button);
         }
         showScreen('autoDrawing');
@@ -68,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.continuousRound++;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button button'; button.textContent = i + 1; button.dataset.index = i;
+            button.className = 'auto-draw-button'; // 'button' 클래스 제거하여 비활성화 스타일 복구
+            button.textContent = i + 1; button.dataset.index = i;
             elements.continuousDrawButtons.appendChild(button);
         }
         showScreen('continuousDrawing');
@@ -155,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setWrapper.className = 'continuous-result-set';
         setWrapper.innerHTML = `<h3>${appState.continuousRound}번째 결과</h3><div class="continuous-result-cards">${resultHTML}</div>`;
         elements.continuousResultArea.appendChild(setWrapper);
-        // 연속 뽑기 결과창의 모든 h4에 동적 폰트 조절 적용
         setWrapper.querySelectorAll('[data-dynamic-font]').forEach(el => adjustFontSize(el));
         setWrapper.scrollIntoView({ behavior: 'smooth' });
     }
