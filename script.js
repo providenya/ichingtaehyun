@@ -19,7 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const screens = {};
-    document.querySelectorAll('.screen').forEach(s => screens[s.id.replace('-screen', '')] = s);
+    // --- 여기가 수정된 부분입니다 ---
+    document.querySelectorAll('.screen').forEach(s => {
+        const key = s.id.replace(/-(\w)/g, (match, letter) => letter.toUpperCase()).replace('Screen', '');
+        screens[key] = s;
+    });
     
     // 모든 버튼과 주요 요소들
     const elements = {
@@ -202,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 5. 이벤트 핸들러 ---
     
-    // 덱 선택
     elements.deckList.addEventListener('click', async (e) => {
         const deckCard = e.target.closest('.deck-card');
         if (deckCard && await loadDeck(deckCard.dataset.deckId)) {
@@ -210,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // 스프레드 선택
     elements.spreadList.addEventListener('click', (e) => {
         const spreadButton = e.target.closest('.spread-button');
         if (!spreadButton) return;
@@ -225,15 +227,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 뒤로가기 버튼들
     elements.backButtons.forEach(button => {
         button.addEventListener('click', () => showScreen(button.dataset.target));
     });
 
-    // 커스텀 생성기
     elements.setCardCountButton.addEventListener('click', () => setupCustomSpreadCreator(parseInt(elements.numCardsInput.value)));
     
-    // 드래그 앤 드롭 로직
     let draggedItem = null;
     elements.layoutPreview.addEventListener('dragstart', e => {
         draggedItem = e.target;
@@ -264,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showScreen('drawMethod');
     });
 
-    // 뽑기 방식 선택
     elements.drawMethodList.addEventListener('click', (e) => {
         const methodButton = e.target.closest('.draw-method-button');
         if (!methodButton) return;
@@ -272,12 +270,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (appState.drawMode === 'manual') {
             setupManualDrawingScreen();
-        } else { // auto, continuous
+        } else {
             setupAutoDrawingScreen();
         }
     });
 
-    // 수동 뽑기
     elements.cardPool.addEventListener('click', (e) => {
         const cardContainer = e.target.closest('.card-container');
         if (!cardContainer) return;
@@ -294,13 +291,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         elements.manualConfirmButton.disabled = appState.manuallySelectedCards.size !== appState.currentSpread.cards_to_draw;
     });
+
     elements.manualResetButton.addEventListener('click', setupManualDrawingScreen);
     elements.manualConfirmButton.addEventListener('click', () => {
-        const drawnCards = Array.from(appState.manuallySelectedCards).map(i => appState.currentDeck.cards[i]);
+        const drawnCards = Array.from(appState.manuallySelectedCards).map(i => appState.shuffledDeck[i]);
         renderFinalResults(drawnCards);
     });
 
-    // 자동/연속 뽑기
     elements.autoDrawButtons.addEventListener('click', (e) => {
         const button = e.target.closest('.auto-draw-button');
         if (!button || button.disabled) return;
@@ -313,16 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (allDrawn) {
             if (appState.drawMode === 'auto') {
                 setTimeout(() => renderFinalResults(appState.autoDrawnCards), 500);
-            } else { // continuous
+            } else {
                 renderContinuousResult();
             }
         }
     });
+
     elements.autoResetButton.addEventListener('click', setupAutoDrawingScreen);
 
-    // 처음으로
     elements.restartButton.addEventListener('click', resetAll);
     
-    // 앱 시작
     loadDeck('universal_waite').then(() => console.log("기본 덱 로드 완료"));
 });
