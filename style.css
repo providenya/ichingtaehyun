@@ -20,7 +20,7 @@ h1, h2 { color: var(--primary-color); }
 .screen.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* 버튼 스타일 (요청사항 2번 반영) */
+/* 버튼 스타일 (수정 없음, 완벽한 상태 유지) */
 .button, .spread-button, .draw-method-button, .back-button, #manual-reset-button, #auto-reset-button, #set-card-count-button {
     background-color: var(--card-bg);
     color: var(--font-color);
@@ -33,16 +33,11 @@ h1, h2 { color: var(--primary-color); }
     margin-bottom: 1rem;
 }
 .button:hover, .spread-button:hover, .draw-method-button:hover, .back-button:hover, #manual-reset-button:hover, #auto-reset-button:hover, #set-card-count-button:hover { background-color: var(--primary-color); }
-
 .spread-button, .draw-method-button { width: 280px; }
 .back-button { position: absolute; top: 1.5rem; left: 1.5rem; width: auto; margin-bottom: 0; }
 .top-controls .button { width: auto; margin-bottom: 0; }
 #set-card-count-button { width: auto; margin-left: 0.5rem; margin-bottom: 0; }
-
-.action-button {
-    background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 1.5rem;
-    font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;
-}
+.action-button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
 .action-button:hover { background-color: #c33c51; }
 .action-button:disabled { background-color: #555; cursor: not-allowed; }
 
@@ -55,24 +50,16 @@ h1, h2 { color: var(--primary-color); }
 #spread-list, #draw-method-list { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 
 /* 커스텀 스프레드 생성기 */
-#layout-preview {
-    position: relative; height: 600px; background-color: var(--secondary-color);
-    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-    background-size: 20px 20px; border-radius: 10px; margin: 2rem auto; max-width: 800px;
-}
-.draggable-card {
-    position: absolute; width: var(--card-width-small); height: var(--card-height-small); background-color: var(--card-bg);
-    border: 1px dashed var(--primary-color); border-radius: 5px; display: flex; justify-content: center;
-    align-items: center; font-size: 1.5rem; color: var(--primary-color); cursor: grab;
-}
+#layout-preview { position: relative; height: 600px; background-color: var(--secondary-color); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; border-radius: 10px; margin: 2rem auto; max-width: 800px; }
+.draggable-card { position: absolute; width: var(--card-width-small); height: var(--card-height-small); background-color: var(--card-bg); border: 1px dashed var(--primary-color); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: var(--primary-color); cursor: grab; }
 .draggable-card.dragging { opacity: 0.5; cursor: grabbing; }
 
 /* 뽑기 화면 */
 .top-controls { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
 #card-pool { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
-.card-container { width: var(--card-width-small); height: var(--card-height-small); transition: transform 0.3s; cursor: pointer; }
-.card-container.selected { transform: translateY(-20px); }
-.card-container img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
+#card-pool .card-container { width: var(--card-width-small); height: var(--card-height-small); transition: transform 0.3s; cursor: pointer; }
+#card-pool .card-container.selected { transform: translateY(-20px); }
+#card-pool .card-container img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
 #auto-draw-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
 .auto-draw-button { width: var(--card-width-small); height: var(--card-height-small); background-color: var(--primary-color); color: white; font-size: 2rem; border: none; border-radius: 6px; cursor: pointer; }
 .auto-draw-button:disabled { background-color: #555; cursor: not-allowed; }
@@ -86,15 +73,11 @@ h1, h2 { color: var(--primary-color); }
 #continuous-result-area .card-text-wrapper h4 { font-size: 0.8rem; margin: 0; }
 
 /* 최종 결과 화면 */
-#result-cards {
-    position: relative; max-width: 1000px; height: 700px; margin: 0 auto;
-    display: flex; justify-content: center; align-items: center; gap: 1.5rem;
-}
+#result-cards { position: relative; max-width: 1000px; height: 700px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 1.5rem; }
 .result-card-container { text-align: center; width: var(--card-width-large); }
 .card-flipper-wrapper { width: 100%; height: var(--card-height-large); perspective: 1000px; margin-bottom: 0.5rem; }
 .card-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .card-flipper-wrapper.flipped .card-flipper { transform: rotateY(180deg); }
-
 .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; overflow: hidden; }
 .card-face img { width: 100%; height: 100%; object-fit: cover; }
 .card-face.front { transform: rotateY(180deg); background-color: var(--secondary-color); }
@@ -102,7 +85,8 @@ h1, h2 { color: var(--primary-color); }
 .card-text-wrapper h4 { font-size: 0.9rem; margin: 0 0 0.3rem 0; color: var(--primary-color); }
 .card-text-wrapper p { font-size: 0.8rem; margin: 0; }
 
-/* 켈틱/커스텀 레이아웃 공통 (요청사항 1, 3번) */
+/* --- 여기가 수정된 부분입니다 --- */
+/* 켈틱/커스텀 레이아웃 공통 */
 #result-cards.absolute-layout { display: block; }
 #result-cards.absolute-layout .result-card-container {
     position: absolute;
@@ -111,10 +95,10 @@ h1, h2 { color: var(--primary-color); }
 }
 #result-cards.absolute-layout .card-flipper-wrapper { height: var(--card-height-small); }
 #result-cards.absolute-layout .card-text-wrapper h4 { font-size: 0.7rem; }
-#result-cards.absolute-layout .card-text-wrapper p { display: none; } /* 작은 카드에서는 키워드 숨김 */
+#result-cards.absolute-layout .card-text-wrapper p { display: none; }
 
 /* 켈틱 크로스 전용 위치 */
-.celtic-cross-layout [data-position="1"] { top: 40%; left: 40%; }
+.celtic-cross-layout [data-position="1"] { top: 40%; left: 40%; z-index: 1; }
 .celtic-cross-layout [data-position="2"] { top: 40%; left: 40%; transform: rotate(90deg); z-index: 2; } /* 1번 카드 위로 오도록 z-index 높임 */
 .celtic-cross-layout [data-position="3"] { top: 70%; left: 40%; }
 .celtic-cross-layout [data-position="4"] { top: 40%; left: 20%; }

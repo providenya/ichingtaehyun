@@ -83,8 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            // --- 여기가 수정된 부분입니다 (요청사항 2번) ---
-            button.className = 'auto-draw-button'; // 'button' 클래스를 제거하여 고유 스타일만 적용
+            // --- 여기가 수정된 부분입니다 ---
+            button.className = 'auto-draw-button button'; // .button 클래스 추가
             button.textContent = i + 1; button.dataset.index = i;
             elements.autoDrawButtons.appendChild(button);
         }
@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isCustom = appState.currentSpread.name === "나만의 스프레드";
         const isCeltic = appState.currentSpread.name === "켈틱 크로스";
         
-        // --- 여기가 수정된 부분입니다 (요청사항 1, 3번) ---
         elements.resultCards.className = (isCustom || isCeltic) ? 'absolute-layout' : '';
         if(isCeltic) elements.resultCards.classList.add('celtic-cross-layout');
 
@@ -126,8 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.resultCards.appendChild(resultContainer);
 
             if (isCustom && appState.customLayout[index]) {
-                resultContainer.style.left = appState.customLayout[index].left;
-                resultContainer.style.top = appState.customLayout[index].top;
+                const layout = appState.customLayout[index];
+                resultContainer.style.left = `calc(${layout.xPercent}% - ${getComputedStyle(resultContainer).width.replace('px','')/2}px)`;
+                resultContainer.style.top = `calc(${layout.yPercent}% - ${getComputedStyle(resultContainer).height.replace('px','')/2}px)`;
             }
 
             setTimeout(() => resultContainer.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
@@ -198,9 +198,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // --- 여기가 수정된 부분입니다 ---
     elements.startCustomSpreadButton.addEventListener('click', () => {
         const cards = elements.layoutPreview.querySelectorAll('.draggable-card');
-        appState.customLayout = Array.from(cards).sort((a,b) => a.dataset.id - b.dataset.id).map(c => ({ left: c.style.left, top: c.style.top }));
+        const previewRect = elements.layoutPreview.getBoundingClientRect();
+
+        appState.customLayout = Array.from(cards).sort((a, b) => a.dataset.id - b.dataset.id).map(c => {
+            const cardRect = c.getBoundingClientRect();
+            // 배치판 내부에서의 상대적인 위치를 %로 저장
+            const xPercent = ((cardRect.left - previewRect.left + cardRect.width / 2) / previewRect.width) * 100;
+            const yPercent = ((cardRect.top - previewRect.top + cardRect.height / 2) / previewRect.height) * 100;
+            return { xPercent, yPercent };
+        });
+
         appState.currentSpread = { name: "나만의 스프레드", cards_to_draw: cards.length, positions: Array.from({length: cards.length}, (_, i) => `위치 ${i+1}`) };
         showScreen('drawMethod');
     });
