@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.autoDrawTitle.textContent = `${appState.currentSpread.name} (${appState.currentSpread.cards_to_draw}장)`;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button'; // 비활성화 스타일을 위해 .button 클래스 제거
+            // --- 여기가 수정된 부분입니다 (BEM 적용) ---
+            button.className = 'button button--draw';
             button.textContent = i + 1; button.dataset.index = i;
             elements.autoDrawButtons.appendChild(button);
         }
@@ -56,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.continuousRound++;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button'; // 비활성화 스타일을 위해 .button 클래스 제거
+            // --- 여기가 수정된 부분입니다 (BEM 적용) ---
+            button.className = 'button button--draw';
             button.textContent = i + 1; button.dataset.index = i;
             elements.continuousDrawButtons.appendChild(button);
         }
@@ -105,17 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
         view.classList.add('active');
     }
     
-    /**
-     * --- 여기가 수정된 부분입니다 ---
-     * 결과 카드 하나의 HTML 요소를 생성하는 헬퍼 함수
-     */
     function createResultCardElement(card, index) {
         const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
         const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
         const backImagePath = appState.currentDeck.deckInfo.imagePath + appState.currentDeck.deckInfo.backImage;
         const container = document.createElement('div');
         container.className = 'result-card-container'; container.dataset.position = index + 1;
-        // 요구사항 1번: HTML 구조 변경 (위치 -> 이미지 -> 이름/키워드)
         container.innerHTML = `
             <p class="result-card-position">${position}</p>
             <div class="card-flipper-wrapper">
@@ -130,18 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
         return container;
     }
-
     function renderContinuousResult() {
         const resultHTML = appState.autoDrawnCards.map((card, index) => {
              const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
              const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
-             return `<div class="result-card-container">
-                        <p class="result-card-position">${position}</p>
-                        <div class="card-image-wrapper card-container">
-                           ${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}
-                        </div>
-                        <div class="card-text-wrapper"><h4>${card.name}</h4></div>
-                     </div>`;
+             return `<div class="result-card-container"><p class="result-card-position">${position}</p><div class="card-image-wrapper card-container">${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}</div><div class="card-text-wrapper"><h4>${card.name}</h4></div></div>`;
         }).join('');
         const setWrapper = document.createElement('div');
         setWrapper.className = 'continuous-result-set';
@@ -168,12 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.manualConfirmButton.addEventListener('click', () => { const drawnCards = Array.from(appState.manuallySelectedCards).map(id => appState.currentDeck.cards.find(card => card.id === id)); renderFinalResults(drawnCards); });
     [elements.autoDrawButtons, elements.continuousDrawButtons].forEach(container => {
         container.addEventListener('click', (e) => {
-            const button = e.target.closest('.auto-draw-button');
+            // --- 여기가 수정된 부분입니다 (BEM 적용) ---
+            const button = e.target.closest('.button--draw');
             if (!button || button.disabled) return;
             button.disabled = true;
             const card = appState.shuffledDeck.pop();
             appState.autoDrawnCards[button.dataset.index] = card;
-            const allDrawn = container.querySelectorAll('.auto-draw-button:not(:disabled)').length === 0;
+            const allDrawn = container.querySelectorAll('.button--draw:not(:disabled)').length === 0;
             if (allDrawn) {
                 if (appState.drawMode === 'auto') { setTimeout(() => renderFinalResults(appState.autoDrawnCards), 500); }
                 else { renderContinuousResult(); }
