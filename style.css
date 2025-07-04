@@ -28,15 +28,13 @@ h1, h2 {
 
 /* 화면 전환 관리 */
 .screen {
-    display: none; /* 기본적으로 모든 화면을 숨김 */
+    display: none;
     padding: 2rem;
     animation: fadeIn 0.5s;
 }
-
 .screen.active {
-    display: block; /* active 클래스가 있는 화면만 보여줌 */
+    display: block;
 }
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -49,7 +47,6 @@ h1, h2 {
     gap: 1.5rem;
     flex-wrap: wrap;
 }
-
 .deck-card {
     background-color: var(--card-bg);
     border: 2px solid var(--primary-color);
@@ -59,7 +56,6 @@ h1, h2 {
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .deck-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(233, 69, 96, 0.2);
@@ -72,7 +68,6 @@ h1, h2 {
     align-items: center;
     gap: 1rem;
 }
-
 .spread-button {
     background-color: var(--card-bg);
     color: var(--font-color);
@@ -84,166 +79,107 @@ h1, h2 {
     transition: background-color 0.3s;
     width: 250px;
 }
-
 .spread-button:hover {
     background-color: var(--primary-color);
 }
 
-/* 카드 뽑기 및 결과 화면 스타일 */
+/* --- 카드 뽑기 및 결과 화면 공통 스타일 --- */
 #card-pool, #result-cards {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* 카드가 위로 정렬되도록 변경 */
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem; /* 간격 조정 */
     margin-top: 2rem;
-    min-height: 200px; /* 카드가 들어갈 공간 확보 */
-}
-
-.card-back {
-    width: 100px;
-    height: 150px;
-    background-color: #535c68; /* 임시 카드 뒷면 색 */
-    border: 2px solid white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-.card-back:hover {
-    transform: scale(1.05);
-}
-
-.result-card-container {
-    text-align: center;
-    width: 250px;
-}
-
-.result-card-position {
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
-}
-
-.card-front {
-    width: 120px;
-    height: 180px;
-    background-color: #f0f0f0;
-    color: black;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 1rem;
-    box-sizing: border-box; /* 패딩이 크기에 포함되도록 설정 */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    margin: 0 auto; /* 가운데 정렬 */
-}
-
-/* 다시 시작 버튼 */
-#restart-button {
-    margin-top: 2rem;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: background-color 0.3s;
-}
-
-#restart-button:hover {
-    background-color: #c33c51;
+    min-height: 200px;
 }
 
 /* --- 카드 플립 애니메이션 스타일 --- */
-
-/* 카드 전체를 감싸는 컨테이너. 3D 효과를 위한 공간 */
 .card-container {
-    perspective: 1000px; /* 3D 효과를 위한 원근감 */
-    width: 100px; /* .card-back과 동일한 크기 */
+    perspective: 1000px;
+    width: 100px;
     height: 150px;
+    cursor: pointer;
 }
-
-/* 실제 뒤집힐 카드 요소. 앞면과 뒷면을 모두 포함 */
 .card-flipper {
     position: relative;
     width: 100%;
     height: 100%;
     transition: transform 0.6s;
-    transform-style: preserve-3d; /* 자식 요소도 3D 공간에 있도록 설정 */
+    transform-style: preserve-3d;
 }
-
-/* 카드가 뒤집혔을 때의 상태 */
+/* --- 수정된 부분 --- */
+/* 카드가 뒤집혔을 때, 다른 카드 위로 올라오도록 z-index 추가 */
+.card-container.flipped {
+    z-index: 10;
+}
 .card-container.flipped .card-flipper {
     transform: rotateY(180deg);
 }
 
-/* 카드 앞면과 뒷면의 공통 스타일 */
 .card-face {
     position: absolute;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari 호환성 */
-    backface-visibility: hidden; /* 뒷면은 보이지 않게 처리 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     border-radius: 8px;
     object-fit: cover;
+    border: 2px solid white;
 }
-
-/* 카드 앞면 스타일 (뒤집혔을 때 보임) */
 .card-face.front {
-    transform: rotateY(180deg); /* 미리 180도 뒤집어 둠 */
+    transform: rotateY(180deg);
 }
-
-/* 카드 뽑기 화면의 카드 뒷면 스타일 수정 */
-/* 기존 .card-back을 .card-container로 대체합니다. */
-#card-pool .card-container {
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
 #card-pool .card-container:hover {
     transform: scale(1.05);
 }
 
-/* 기존 .card-back 스타일은 이제 필요 없습니다. 아래처럼 수정하거나 삭제하세요. */
-.card-back {
-    /* 기존 스타일 내용 대부분이 .card-face로 이동했으므로, 
-       여기는 비워두거나 필요한 최소한의 스타일만 남깁니다. */
-    border: 2px solid white; /* 테두리 정도만 남겨도 좋습니다. */
-}
-
-/* 결과 화면의 카드 스타일도 플립 구조에 맞게 수정 */
+/* --- 결과 화면 카드 스타일 (명확하게 분리) --- */
 #result-cards .result-card-container {
-    width: 150px; /* 결과 카드 크기에 맞게 조정 */
-    height: auto;
+    width: 180px; /* 결과 카드 전체 컨테이너 너비 */
 }
 
-#result-cards .card-flipper {
-    width: 150px;
-    height: 225px; /* 결과 카드 크기 (150px의 1.5배) */
+#result-cards .result-card-position {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
 }
 
-/* 결과 화면의 .card-front는 이제 플립 구조의 일부가 됩니다. */
-#result-cards .card-front {
+/* 결과 화면의 카드 크기 조절 */
+#result-cards .card-container {
+    width: 100%; /* 부모(.result-card-container) 너비에 맞춤 */
+    height: 270px; /* 180px 너비의 1.5배 높이 */
+    cursor: default;
+}
+
+/* 결과 화면의 카드 앞면 스타일 */
+#result-cards .card-face.front {
+    background-color: #f0f0f0;
+    color: black;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
     padding: 10px;
     box-sizing: border-box;
-    background-color: #f0f0f0;
-    color: black;
+    border-color: #ccc;
+    overflow: hidden; /* 내용이 넘치면 숨김 */
 }
-#result-cards .card-front img {
+#result-cards .card-face.front img {
     width: 100%;
+    height: auto;
     border-radius: 5px;
 }
+#result-cards .card-face.front h4 {
+    font-size: 1rem;
+    margin: 8px 0 4px 0;
+}
+#result-cards .card-face.front p {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
 
 /* --- 커스텀 스프레드 생성기 스타일 --- */
-
 #custom-spread-creator-screen .creator-controls {
     margin-bottom: 2rem;
     display: flex;
@@ -251,7 +187,6 @@ h1, h2 {
     align-items: center;
     gap: 1rem;
 }
-
 #custom-spread-creator-screen input[type="number"] {
     width: 60px;
     padding: 0.5rem;
@@ -262,7 +197,6 @@ h1, h2 {
     text-align: center;
     font-size: 1rem;
 }
-
 #custom-spread-creator-screen button {
     background-color: var(--card-bg);
     color: var(--font-color);
@@ -272,11 +206,9 @@ h1, h2 {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
 #custom-spread-creator-screen button:hover {
     background-color: var(--primary-color);
 }
-
 .creator-main {
     display: flex;
     justify-content: center;
@@ -284,33 +216,28 @@ h1, h2 {
     margin-top: 1rem;
     flex-wrap: wrap;
 }
-
 #position-editor, #layout-preview {
     background-color: var(--secondary-color);
     padding: 1.5rem;
     border-radius: 10px;
-    flex-basis: 400px; /* 기본 너비 */
+    flex-basis: 400px;
 }
-
 #position-inputs {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
     margin-top: 1rem;
 }
-
 .position-input-group {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
-
 .position-input-group label {
     font-weight: bold;
     color: var(--primary-color);
     width: 30px;
 }
-
 .position-input-group input {
     flex-grow: 1;
     padding: 0.5rem;
@@ -319,10 +246,9 @@ h1, h2 {
     border: 1px solid var(--card-bg);
     border-radius: 4px;
 }
-
 #preview-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5x4 그리드 */
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     margin-top: 1rem;
     background-color: var(--bg-color);
@@ -330,7 +256,6 @@ h1, h2 {
     border-radius: 5px;
     min-height: 200px;
 }
-
 .grid-cell {
     width: 60px;
     height: 90px;
@@ -345,21 +270,24 @@ h1, h2 {
     font-weight: bold;
 }
 
-/* 주요 액션 버튼 스타일 */
-.action-button {
+/* 다시 시작 및 주요 액션 버튼 */
+#restart-button, .action-button {
     margin-top: 2rem;
-    background-color: var(--primary-color) !important;
-    color: white !important;
-    border: none !important;
-    padding: 1rem 2rem !important;
-    font-size: 1.1rem !important;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
     transition: background-color 0.3s;
 }
-.action-button:hover {
-    background-color: #c33c51 !important;
+#restart-button:hover, .action-button:hover {
+    background-color: #c33c51;
 }
-
 .secondary-button {
     margin-left: 1rem;
-    background-color: transparent !important;
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
 }
