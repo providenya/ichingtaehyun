@@ -23,22 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
         spreadList: document.getElementById('spread-list'),
         drawMethodList: document.getElementById('draw-method-list'),
         backButtons: document.querySelectorAll('.back-button'),
-        // 커스텀
         numCardsInput: document.getElementById('num-cards-input'),
         setCardCountButton: document.getElementById('set-card-count-button'),
         layoutPreview: document.getElementById('layout-preview'),
         startCustomSpreadButton: document.getElementById('start-custom-spread-button'),
-        // 수동
         manualDrawTitle: document.getElementById('manual-draw-title'),
         cardPool: document.getElementById('card-pool'),
         manualConfirmButton: document.getElementById('manual-confirm-button'),
         manualResetButton: document.getElementById('manual-reset-button'),
-        // 자동
         autoDrawTitle: document.getElementById('auto-draw-title'),
         autoDrawButtons: document.getElementById('auto-draw-buttons'),
         autoResetButton: document.getElementById('auto-reset-button'),
         continuousResultArea: document.getElementById('continuous-result-area'),
-        // 결과
         resultCards: document.getElementById('result-cards'),
         restartButton: document.getElementById('restart-button'),
     };
@@ -87,7 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button button'; button.textContent = i + 1; button.dataset.index = i;
+            // --- 여기가 수정된 부분입니다 (요청사항 2번) ---
+            button.className = 'auto-draw-button'; // 'button' 클래스를 제거하여 고유 스타일만 적용
+            button.textContent = i + 1; button.dataset.index = i;
             elements.autoDrawButtons.appendChild(button);
         }
         showScreen('autoDrawing');
@@ -98,7 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.resultCards.innerHTML = '';
         const isCustom = appState.currentSpread.name === "나만의 스프레드";
         const isCeltic = appState.currentSpread.name === "켈틱 크로스";
-        elements.resultCards.className = isCeltic ? 'celtic-cross-layout' : '';
+        
+        // --- 여기가 수정된 부분입니다 (요청사항 1, 3번) ---
+        elements.resultCards.className = (isCustom || isCeltic) ? 'absolute-layout' : '';
+        if(isCeltic) elements.resultCards.classList.add('celtic-cross-layout');
 
         drawnCards.forEach((card, index) => {
             const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
@@ -125,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.resultCards.appendChild(resultContainer);
 
             if (isCustom && appState.customLayout[index]) {
-                resultContainer.style.position = 'absolute';
                 resultContainer.style.left = appState.customLayout[index].left;
                 resultContainer.style.top = appState.customLayout[index].top;
             }
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.disabled = true;
         const card = appState.shuffledDeck.pop();
         appState.autoDrawnCards[button.dataset.index] = card;
-        const allDrawn = elements.autoDrawButtons.querySelectorAll('button:not(:disabled)').length === 0;
+        const allDrawn = elements.autoDrawButtons.querySelectorAll('.auto-draw-button:not(:disabled)').length === 0;
         if (allDrawn) {
             if (appState.drawMode === 'auto') setTimeout(() => renderFinalResults(appState.autoDrawnCards), 500);
             else renderContinuousResult();
