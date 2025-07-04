@@ -12,26 +12,18 @@ h1, h2 { color: var(--primary-color); }
 .screen.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* --- 새로운 버튼 시스템 (BEM 방식) --- */
-/* 기본 블록 */
-.button {
-    background-color: var(--card-bg); color: var(--font-color); border: 1px solid var(--primary-color);
-    padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer;
-    font-size: 1rem; transition: background-color 0.3s, opacity 0.3s; margin-bottom: 1rem;
-}
+/* 버튼 스타일 (완벽, 수정 없음) */
+.button { background-color: var(--card-bg); color: var(--font-color); border: 1px solid var(--primary-color); padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background-color 0.3s; margin-bottom: 1rem; }
 .button:hover { background-color: var(--primary-color); }
-.button:disabled { background-color: #555; border-color: #555; color: #999; cursor: not-allowed; opacity: 0.7; }
-
-/* 수식어(Modifier) */
-.button--spread { width: 280px; }
-.button--draw { width: var(--card-width-small); height: var(--card-height-small); padding: 0; font-size: 2rem; background-color: var(--primary-color); color: white; border: none; }
-.button--action { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
-.button--action:hover { background-color: #c33c51; border-color: #c33c51; }
-.button--back, .button--control { width: auto; margin-bottom: 0; }
-.button--back { position: absolute; top: 1.5rem; left: 1.5rem; }
+.spread-button, .draw-method-button { width: 280px; }
+.back-button, .top-controls .button, #set-card-count-button { width: auto; margin-bottom: 0; }
+.back-button { position: absolute; top: 1.5rem; left: 1.5rem; }
 #set-card-count-button { margin-left: 0.5rem; }
+.action-button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+.action-button:hover { background-color: #c33c51; }
+.action-button:disabled { background-color: #555; cursor: not-allowed; }
 
-/* 덱 선택 ~ 뽑기 화면 */
+/* 덱 선택 ~ 뽑기 화면 (이전과 동일) */
 #deck-list { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
 .deck-card { background-color: var(--card-bg); border: 2px solid var(--primary-color); border-radius: 10px; padding: 1.5rem; width: 200px; cursor: pointer; transition: transform 0.3s; }
 .deck-card:hover { transform: translateY(-10px); }
@@ -45,19 +37,30 @@ h1, h2 { color: var(--primary-color); }
 #card-pool .card-container.selected { transform: translateY(-20px); }
 #card-pool .card-container img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
 #auto-draw-buttons, #continuous-draw-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+.auto-draw-button { width: var(--card-width-small); height: var(--card-height-small); }
+.auto-draw-button:disabled { background-color: #555; cursor: not-allowed; opacity: 0.6; }
 #continuous-result-area { display: flex; flex-direction: column-reverse; gap: 2rem; }
 .continuous-result-set { border-top: 2px solid var(--primary-color); padding-top: 2rem; }
 .continuous-result-cards { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; align-items: flex-start; }
-#continuous-result-area .result-card-container { width: var(--card-width-small); padding: 0.5rem; }
+#continuous-result-area .result-card-container { width: var(--card-width-small); }
 #continuous-result-area .result-card-position { font-size: 0.8rem; }
-#continuous-result-area .card-image-wrapper { height: var(--card-height-small); }
+#continuous-result-area .card-image-wrapper { height: var(--card-height-small); margin-bottom: 0.5rem; }
 #continuous-result-area .card-image-wrapper img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
-#continuous-result-area .card-text-wrapper h4 { font-size: 0.8rem; margin: 0.5rem 0 0 0; word-break: keep-all; }
+#continuous-result-area .card-text-wrapper h4 { font-size: 0.8rem; margin: 0; }
 
-/* --- 최종 결과 화면 스타일 --- */
+/* --- 최종 결과 화면 스타일 분리 및 수정 --- */
 .result-view { display: none; }
 .result-view.active { display: block; }
-.result-card-container { background-color: var(--secondary-color); border: 1px solid var(--primary-color); border-radius: 10px; padding: 1rem; box-sizing: border-box; }
+
+/* 컨테이너 공통 스타일 (요청사항 2번) */
+.result-card-container {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 1rem;
+    box-sizing: border-box;
+    text-align: center;
+}
 .result-card-position { font-weight: bold; color: var(--primary-color); margin-top: 0; margin-bottom: 0.5rem; }
 .card-flipper-wrapper { perspective: 1000px; margin-bottom: 0.5rem; }
 .card-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
@@ -65,16 +68,17 @@ h1, h2 { color: var(--primary-color); }
 .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; overflow: hidden; }
 .card-face img { width: 100%; height: 100%; object-fit: cover; }
 .card-face.front { transform: rotateY(180deg); background-color: var(--secondary-color); }
-.card-text-wrapper { text-align: center; padding-top: 0.5rem; }
+.card-text-wrapper { padding-top: 0.5rem; }
+/* 요구사항 1번: 이름 생략 방지 */
 .card-text-wrapper h4 { font-size: 0.9rem; margin: 0 0 0.3rem 0; color: var(--primary-color); word-break: keep-all; }
 .card-text-wrapper p { font-size: 0.8rem; margin: 0; }
 
-/* 1. 기본 결과 뷰 */
+/* 1. 기본 결과 뷰 (큰 카드) */
 #result-default-view.active { display: flex; justify-content: center; align-items: flex-start; gap: 1.5rem; padding: 2rem 0; }
 #result-default-view .result-card-container { width: var(--card-width-large); }
 #result-default-view .card-flipper-wrapper { height: var(--card-height-large); }
 
-/* 2. 켈틱 & 3. 커스텀 결과 뷰 */
+/* 2. 켈틱 크로스 & 3. 커스텀 결과 뷰 (작은 카드) */
 #result-celtic-view, #result-custom-view { position: relative; max-width: 1000px; height: 700px; margin: 0 auto; }
 #result-celtic-view .result-card-container, #result-custom-view .result-card-container { position: absolute; width: var(--card-width-small); }
 #result-celtic-view .card-flipper-wrapper, #result-custom-view .card-flipper-wrapper { height: var(--card-height-small); }
