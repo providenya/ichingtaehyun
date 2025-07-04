@@ -12,22 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetAll = () => { appState.continuousRound = 0; elements.continuousResultArea.innerHTML = ''; showScreen('deckSelection'); };
     async function loadDeck(deckId) { try { const r = await fetch(`assets/data/${deckId}.json`); if (!r.ok) throw Error('덱 데이터 로드 실패'); appState.currentDeck=await r.json(); return true; } catch (e) { alert(e.message); return false; } }
 
-    /**
-     * --- 여기가 추가된 부분입니다 (동적 폰트 조절) ---
-     * 텍스트가 부모 요소를 넘치면 폰트 크기를 자동으로 줄이는 함수
-     * @param {HTMLElement} element - 폰트 크기를 조절할 텍스트 요소 (h4)
-     */
-    function adjustFontSize(element) {
-        // 폰트 크기를 초기화해야 매번 정확하게 계산됨
-        element.style.fontSize = ''; 
-        let currentSize = parseFloat(getComputedStyle(element).fontSize);
-        // 부모 요소의 너비보다 글자의 실제 너비가 더 크면 루프 실행
-        while (element.scrollWidth > element.clientWidth && currentSize > 8) { // 최소 8px
-            currentSize -= 0.5; // 0.5px씩 미세하게 줄임
-            element.style.fontSize = `${currentSize}px`;
-        }
-    }
-
     // 3. 화면별 설정(Setup) 함수
     function setupCustomSpreadCreator(cardCount) {
         elements.layoutPreview.innerHTML = '';
@@ -35,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 1; i <= cardCount; i++) {
             const cell = document.createElement('div');
             cell.className = 'draggable-card'; cell.dataset.id = i; cell.textContent = i; cell.draggable = true;
-            cell.style.left = `${(i - 1) * 180}px`; cell.style.top = `20px`;
+            cell.style.left = `${(i - 1) * 110}px`; cell.style.top = `20px`;
             elements.layoutPreview.appendChild(cell);
         }
     }
@@ -60,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.autoDrawTitle.textContent = `${appState.currentSpread.name} (${appState.currentSpread.cards_to_draw}장)`;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button'; // 'button' 클래스 제거하여 비활성화 스타일 복구
+            button.className = 'auto-draw-button'; // 비활성화 스타일을 위해 .button 클래스 제거
             button.textContent = i + 1; button.dataset.index = i;
             elements.autoDrawButtons.appendChild(button);
         }
@@ -72,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.continuousRound++;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button'; // 'button' 클래스 제거하여 비활성화 스타일 복구
+            button.className = 'auto-draw-button'; // 비활성화 스타일을 위해 .button 클래스 제거
             button.textContent = i + 1; button.dataset.index = i;
             elements.continuousDrawButtons.appendChild(button);
         }
@@ -93,10 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         drawnCards.forEach((card, index) => {
             const cardElement = createResultCardElement(card, index);
             view.appendChild(cardElement);
-            setTimeout(() => {
-                cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped');
-                adjustFontSize(cardElement.querySelector('.card-text-wrapper h4'));
-            }, 100 * (index + 1));
+            setTimeout(() => cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
         });
         view.classList.add('active');
     }
@@ -106,10 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         drawnCards.forEach((card, index) => {
             const cardElement = createResultCardElement(card, index);
             view.appendChild(cardElement);
-            setTimeout(() => {
-                cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped');
-                adjustFontSize(cardElement.querySelector('.card-text-wrapper h4'));
-            }, 100 * (index + 1));
+            setTimeout(() => cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
         });
         view.classList.add('active');
     }
@@ -122,22 +100,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 cardElement.style.top = appState.customLayout[index].top;
             }
             view.appendChild(cardElement);
-            setTimeout(() => {
-                cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped');
-                adjustFontSize(cardElement.querySelector('.card-text-wrapper h4'));
-            }, 100 * (index + 1));
+            setTimeout(() => cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
         });
         view.classList.add('active');
     }
     
+    /**
+     * --- 여기가 수정된 부분입니다 ---
+     * 결과 카드 하나의 HTML 요소를 생성하는 헬퍼 함수
+     */
     function createResultCardElement(card, index) {
         const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
         const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
         const backImagePath = appState.currentDeck.deckInfo.imagePath + appState.currentDeck.deckInfo.backImage;
         const container = document.createElement('div');
         container.className = 'result-card-container'; container.dataset.position = index + 1;
+        // 요구사항 1번: HTML 구조 변경 (위치 -> 이미지 -> 이름/키워드)
         container.innerHTML = `
-            <p class="result-card-position">${position}</p> 
+            <p class="result-card-position">${position}</p>
             <div class="card-flipper-wrapper">
                 <div class="card-flipper">
                     <div class="card-face back"><img src="${backImagePath}" alt="카드 뒷면"></div>
@@ -150,21 +130,27 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
         return container;
     }
+
     function renderContinuousResult() {
         const resultHTML = appState.autoDrawnCards.map((card, index) => {
              const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
              const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
-             return `<div class="result-card-container"><p class="result-card-position">${position}</p><div class="card-image-wrapper card-container">${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}</div><div class="card-text-wrapper"><h4 data-dynamic-font>${card.name}</h4></div></div>`;
+             return `<div class="result-card-container">
+                        <p class="result-card-position">${position}</p>
+                        <div class="card-image-wrapper card-container">
+                           ${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}
+                        </div>
+                        <div class="card-text-wrapper"><h4>${card.name}</h4></div>
+                     </div>`;
         }).join('');
         const setWrapper = document.createElement('div');
         setWrapper.className = 'continuous-result-set';
         setWrapper.innerHTML = `<h3>${appState.continuousRound}번째 결과</h3><div class="continuous-result-cards">${resultHTML}</div>`;
         elements.continuousResultArea.appendChild(setWrapper);
-        setWrapper.querySelectorAll('[data-dynamic-font]').forEach(el => adjustFontSize(el));
         setWrapper.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 5. 이벤트 핸들러
+    // --- 5. 이벤트 핸들러 ---
     elements.deckList.addEventListener('click', async (e) => { const el = e.target.closest('.deck-card'); if (el && await loadDeck(el.dataset.deckId)) showScreen('spreadSelection'); });
     elements.spreadList.addEventListener('click', (e) => { const el = e.target.closest('.spread-button'); if (!el) return; const type = el.dataset.spreadType; if (type === 'custom') { setupCustomSpreadCreator(parseInt(elements.numCardsInput.value)); showScreen('customSpreadCreator'); } else { appState.currentSpread = SPREADS[type]; showScreen('drawMethod'); } });
     elements.backButtons.forEach(b => b.addEventListener('click', () => showScreen(b.dataset.target)));
