@@ -12,6 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetAll = () => { appState.continuousRound = 0; elements.continuousResultArea.innerHTML = ''; showScreen('deckSelection'); };
     async function loadDeck(deckId) { try { const r = await fetch(`assets/data/${deckId}.json`); if (!r.ok) throw Error('덱 데이터 로드 실패'); appState.currentDeck=await r.json(); return true; } catch (e) { alert(e.message); return false; } }
 
+    /**
+     * --- 여기가 수정된 부분입니다 (동적 폰트 조절) ---
+     * 텍스트가 부모 요소를 넘치면 폰트 크기를 자동으로 줄이는 함수
+     * @param {HTMLElement} element - 폰트 크기를 조절할 텍스트 요소 (h4)
+     */
+    function adjustFontSize(element) {
+        let currentSize = parseFloat(getComputedStyle(element).fontSize);
+        while (element.scrollWidth > element.clientWidth && currentSize > 8) { // 최소 8px까지
+            currentSize -= 1; // 1px씩 줄임
+            element.style.fontSize = `${currentSize}px`;
+        }
+    }
+
     // 3. 화면별 설정(Setup) 함수
     function setupCustomSpreadCreator(cardCount) {
         elements.layoutPreview.innerHTML = '';
@@ -75,7 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
         drawnCards.forEach((card, index) => {
             const cardElement = createResultCardElement(card, index);
             view.appendChild(cardElement);
-            setTimeout(() => cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
+            setTimeout(() => {
+                cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped');
+                adjustFontSize(cardElement.querySelector('.card-text-wrapper h4'));
+            }, 100 * (index + 1));
         });
         view.classList.add('active');
     }
@@ -85,7 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
         drawnCards.forEach((card, index) => {
             const cardElement = createResultCardElement(card, index);
             view.appendChild(cardElement);
-            setTimeout(() => cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
+            setTimeout(() => {
+                cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped');
+                adjustFontSize(cardElement.querySelector('.card-text-wrapper h4'));
+            }, 100 * (index + 1));
         });
         view.classList.add('active');
     }
@@ -98,23 +117,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 cardElement.style.top = appState.customLayout[index].top;
             }
             view.appendChild(cardElement);
-            setTimeout(() => cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped'), 100 * (index + 1));
+            setTimeout(() => {
+                cardElement.querySelector('.card-flipper-wrapper').classList.add('flipped');
+                adjustFontSize(cardElement.querySelector('.card-text-wrapper h4'));
+            }, 100 * (index + 1));
         });
         view.classList.add('active');
     }
     
-    /**
-     * 결과 카드 하나의 HTML 요소를 생성하는 헬퍼 함수
-     * --- 여기가 수정된 부분입니다 ---
-     */
     function createResultCardElement(card, index) {
         const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
         const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
         const backImagePath = appState.currentDeck.deckInfo.imagePath + appState.currentDeck.deckInfo.backImage;
         const container = document.createElement('div');
-        container.className = 'result-card-container';
-        container.dataset.position = index + 1;
-        // 위치 텍스트를 이미지 위로, 이름/키워드는 아래로 구조 변경
+        container.className = 'result-card-container'; container.dataset.position = index + 1;
         container.innerHTML = `
             <p class="result-card-position">${position}</p> 
             <div class="card-flipper-wrapper">
@@ -129,28 +145,22 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
         return container;
     }
-
-    /** 연속 뽑기 결과를 렌더링하는 함수 */
     function renderContinuousResult() {
         const resultHTML = appState.autoDrawnCards.map((card, index) => {
              const position = appState.currentSpread.positions[index] || `위치 ${index+1}`;
              const imagePath = card.image ? appState.currentDeck.deckInfo.imagePath + card.image : '';
-             return `<div class="result-card-container">
-                        <p class="result-card-position">${position}</p>
-                        <div class="card-image-wrapper card-container">
-                           ${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}
-                        </div>
-                        <div class="card-text-wrapper"><h4>${card.name}</h4></div>
-                     </div>`;
+             return `<div class="result-card-container"><p class="result-card-position">${position}</p><div class="card-image-wrapper card-container">${imagePath ? `<img src="${imagePath}" alt="${card.name}">` : '<span>이미지 없음</span>'}</div><div class="card-text-wrapper"><h4 data-dynamic-font>${card.name}</h4></div></div>`;
         }).join('');
         const setWrapper = document.createElement('div');
         setWrapper.className = 'continuous-result-set';
         setWrapper.innerHTML = `<h3>${appState.continuousRound}번째 결과</h3><div class="continuous-result-cards">${resultHTML}</div>`;
         elements.continuousResultArea.appendChild(setWrapper);
+        // 연속 뽑기 결과창의 모든 h4에 동적 폰트 조절 적용
+        setWrapper.querySelectorAll('[data-dynamic-font]').forEach(el => adjustFontSize(el));
         setWrapper.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // --- 5. 이벤트 핸들러 ---
+    // 5. 이벤트 핸들러
     elements.deckList.addEventListener('click', async (e) => { const el = e.target.closest('.deck-card'); if (el && await loadDeck(el.dataset.deckId)) showScreen('spreadSelection'); });
     elements.spreadList.addEventListener('click', (e) => { const el = e.target.closest('.spread-button'); if (!el) return; const type = el.dataset.spreadType; if (type === 'custom') { setupCustomSpreadCreator(parseInt(elements.numCardsInput.value)); showScreen('customSpreadCreator'); } else { appState.currentSpread = SPREADS[type]; showScreen('drawMethod'); } });
     elements.backButtons.forEach(b => b.addEventListener('click', () => showScreen(b.dataset.target)));

@@ -31,9 +31,25 @@ h1, h2 { color: var(--primary-color); }
 /* 스프레드, 뽑기방식 선택 */
 #spread-list, #draw-method-list { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 
-/* 나만의 스프레드 생성기 */
-#layout-preview { position: relative; height: 600px; background-color: var(--secondary-color); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; border-radius: 10px; margin: 2rem auto; max-width: 1000px; }
-.draggable-card { position: absolute; width: var(--card-width-large); height: calc(var(--card-height-large) + 60px); background-color: rgba(0,0,0,0.2); border: 2px dashed var(--primary-color); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 2rem; color: var(--primary-color); cursor: grab; box-sizing: border-box; }
+/* --- 나만의 스프레드 생성기 (수정됨) --- */
+/* 배치판 공간을 넓힘 */
+#layout-preview { position: relative; height: 600px; background-color: var(--secondary-color); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; border-radius: 10px; margin: 2rem auto; max-width: 1200px; }
+/* 드래그 카드를 최종 결과물과 유사한 '큰 카드' 크기로 변경 (WYSIWYG) */
+.draggable-card {
+    position: absolute;
+    width: var(--card-width-large); 
+    height: calc(var(--card-height-large) + 60px); /* 텍스트 공간 포함 */
+    background-color: rgba(0,0,0,0.2);
+    border: 2px dashed var(--primary-color);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    cursor: grab;
+    box-sizing: border-box;
+}
 .draggable-card.dragging { opacity: 0.5; cursor: grabbing; }
 
 /* 수동/자동 뽑기 */
@@ -45,20 +61,20 @@ h1, h2 { color: var(--primary-color); }
 #auto-draw-buttons, #continuous-draw-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
 .auto-draw-button { width: var(--card-width-small); height: var(--card-height-small); }
 
-/* 연속 뽑기 결과 */
+/* 연속 뽑기 결과 (독립된 스타일 규칙) */
 #continuous-result-area { display: flex; flex-direction: column-reverse; gap: 2rem; }
 .continuous-result-set { border-top: 2px solid var(--primary-color); padding-top: 2rem; }
 .continuous-result-cards { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; align-items: flex-start; }
 #continuous-result-area .result-card-container { width: var(--card-width-small); }
 #continuous-result-area .result-card-position { font-size: 0.8rem; }
-#continuous-result-area .card-image-wrapper { height: var(--card-height-small); }
+#continuous-result-area .card-image-wrapper { height: var(--card-height-small); margin-bottom: 0.5rem; }
 #continuous-result-area .card-image-wrapper img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
-#continuous-result-area .card-text-wrapper h4 { font-size: 0.8rem; margin-top: 0.5rem; }
+#continuous-result-area .card-text-wrapper h4 { font-size: 0.8rem; margin-top: 0.5rem; word-break: keep-all; } /* 동적 폰트 조절 대상 */
 
 /* --- 최종 결과 화면 스타일 --- */
 .result-view { display: none; }
 .result-view.active { display: block; }
-.result-card-position { font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem; } /* 위치 텍스트 공통 스타일 */
+.result-card-position { font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem; }
 .card-flipper-wrapper { perspective: 1000px; margin-bottom: 0.5rem; }
 .card-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .card-flipper-wrapper.flipped .card-flipper { transform: rotateY(180deg); }
@@ -66,7 +82,8 @@ h1, h2 { color: var(--primary-color); }
 .card-face img { width: 100%; height: 100%; object-fit: cover; }
 .card-face.front { transform: rotateY(180deg); background-color: var(--secondary-color); }
 .card-text-wrapper { text-align: center; }
-.card-text-wrapper h4 { font-size: 0.9rem; margin: 0.5rem 0 0.3rem 0; color: var(--primary-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* 동적 폰트 조절을 위해 생략(...) 코드 제거 */
+.card-text-wrapper h4 { font-size: 0.9rem; margin: 0.5rem 0 0.3rem 0; color: var(--primary-color); word-break: keep-all; }
 .card-text-wrapper p { font-size: 0.8rem; margin: 0; }
 
 /* 1. 기본 결과 뷰 (원, 쓰리 카드) */
@@ -74,22 +91,24 @@ h1, h2 { color: var(--primary-color); }
 #result-default-view .result-card-container { width: var(--card-width-large); }
 #result-default-view .card-flipper-wrapper { height: var(--card-height-large); }
 
-/* 2. 켈틱 크로스 결과 뷰 */
+/* 2. 켈틱 크로스 결과 뷰 (작은 카드로 변경) */
 #result-celtic-view { position: relative; max-width: 1000px; height: 700px; margin: 0 auto; }
-#result-celtic-view .result-card-container { position: absolute; width: var(--card-width-large); }
-#result-celtic-view .card-flipper-wrapper { height: var(--card-height-large); }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="1"] { top: 38%; left: 38%; z-index: 1; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="2"] { top: 38%; left: 38%; transform: rotate(90deg); z-index: 2; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="3"] { top: 75%; left: 38%; z-index: 1; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="4"] { top: 38%; left: 15%; z-index: 1; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="5"] { top: 1%; left: 38%; z-index: 1; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="6"] { top: 38%; left: 61%; z-index: 1; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="7"] { top: 75%; left: 80%; z-index: 3; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="8"] { top: 50%; left: 80%; z-index: 3; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="9"] { top: 25%; left: 80%; z-index: 3; }
-#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="10"]{ top: 0%; left: 80%; z-index: 3; }
+#result-celtic-view .result-card-container { position: absolute; width: var(--card-width-small); }
+#result-celtic-view .card-flipper-wrapper { height: var(--card-height-small); }
+#result-celtic-view .card-text-wrapper h4 { font-size: 0.7rem; }
+#result-celtic-view .card-text-wrapper p { display: none; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="1"] { top: 40%; left: 45%; z-index: 1; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="2"] { top: 40%; left: 45%; transform: rotate(90deg); z-index: 2; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="3"] { top: 70%; left: 45%; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="4"] { top: 40%; left: 28%; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="5"] { top: 10%; left: 45%; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="6"] { top: 40%; left: 62%; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="7"] { top: 80%; left: 85%; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="8"] { top: 60%; left: 85%; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="9"] { top: 40%; left: 85%; }
+#result-celtic-view[data-view="celtic-cross"] .result-card-container[data-position="10"]{ top: 20%; left: 85%; }
 
 /* 3. 커스텀 결과 뷰 */
-#result-custom-view { position: relative; max-width: 1000px; height: 700px; margin: 0 auto; }
+#result-custom-view { position: relative; max-width: 1200px; height: 700px; margin: 0 auto; }
 #result-custom-view .result-card-container { position: absolute; width: var(--card-width-large); }
 #result-custom-view .card-flipper-wrapper { height: var(--card-height-large); }
