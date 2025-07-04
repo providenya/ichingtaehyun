@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shuffledDeck: [],
         manuallySelectedCards: new Set(),
         autoDrawnCards: [],
-        drawMode: null, // 'manual', 'auto', 'continuous'
-        continuousResults: [],
+        drawMode: null,
         continuousRound: 0,
         customLayout: [],
     };
@@ -19,35 +18,28 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const screens = {};
-    // --- 여기가 수정된 부분입니다 ---
     document.querySelectorAll('.screen').forEach(s => {
-        const key = s.id.replace(/-(\w)/g, (match, letter) => letter.toUpperCase()).replace('Screen', '');
+        const key = s.id.replace(/-(\w)/g, (m, l) => l.toUpperCase()).replace('Screen', '');
         screens[key] = s;
     });
     
-    // 모든 버튼과 주요 요소들
     const elements = {
         deckList: document.getElementById('deck-list'),
         spreadList: document.getElementById('spread-list'),
         backButtons: document.querySelectorAll('.back-button'),
-        // 커스텀 생성기
         numCardsInput: document.getElementById('num-cards-input'),
         setCardCountButton: document.getElementById('set-card-count-button'),
         layoutPreview: document.getElementById('layout-preview'),
         startCustomSpreadButton: document.getElementById('start-custom-spread-button'),
-        // 뽑기 방식
         drawMethodList: document.getElementById('draw-method-list'),
-        // 수동 뽑기
         manualDrawTitle: document.getElementById('manual-draw-title'),
         cardPool: document.getElementById('card-pool'),
         manualConfirmButton: document.getElementById('manual-confirm-button'),
         manualResetButton: document.getElementById('manual-reset-button'),
-        // 자동/연속 뽑기
         autoDrawTitle: document.getElementById('auto-draw-title'),
         autoDrawButtons: document.getElementById('auto-draw-buttons'),
         autoResetButton: document.getElementById('auto-reset-button'),
         continuousResultArea: document.getElementById('continuous-result-area'),
-        // 결과
         resultCards: document.getElementById('result-cards'),
         restartButton: document.getElementById('restart-button'),
     };
@@ -64,10 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('덱 데이터 로드 실패');
             appState.currentDeck = await response.json();
             return true;
-        } catch (error) {
-            alert(error.message);
-            return false;
-        }
+        } catch (error) { alert(error.message); return false; }
     }
 
     function shuffleDeck() {
@@ -80,14 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function resetAll() {
-        appState.continuousResults = [];
         appState.continuousRound = 0;
         elements.continuousResultArea.innerHTML = '';
         showScreen('deckSelection');
     }
 
     // --- 3. 화면별 설정(Setup) 함수 ---
-
     function setupCustomSpreadCreator(cardCount) {
         elements.layoutPreview.innerHTML = '';
         if (cardCount < 1 || cardCount > 20) {
@@ -97,13 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         for (let i = 1; i <= cardCount; i++) {
             const cell = document.createElement('div');
-            cell.classList.add('draggable-card');
+            cell.className = 'draggable-card';
             cell.dataset.id = i;
             cell.textContent = i;
             cell.draggable = true;
-            // 초기 위치 랜덤하게 설정
-            cell.style.left = `${Math.random() * 85}%`;
-            cell.style.top = `${Math.random() * 85}%`;
+            cell.style.left = `${(i - 1) * 110}px`;
+            cell.style.top = `20px`;
             elements.layoutPreview.appendChild(cell);
         }
     }
@@ -132,12 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.autoDrawButtons.innerHTML = '';
         elements.autoDrawTitle.textContent = `${appState.currentSpread.name} (${appState.currentSpread.cards_to_draw}장)`;
 
-        if (appState.drawMode === 'continuous') {
-            appState.continuousRound++;
-        } else {
-            elements.continuousResultArea.innerHTML = '';
-        }
-
+        if (appState.drawMode === 'continuous') appState.continuousRound++;
+        
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
             button.className = 'auto-draw-button';
@@ -149,9 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- 4. 결과 렌더링 함수 ---
-    
     function renderFinalResults(drawnCards) {
         elements.resultCards.innerHTML = '';
+        const isCustom = appState.currentSpread.name === "나만의 스프레드";
+
         drawnCards.forEach((card, index) => {
             const position = appState.currentSpread.positions[index] || `카드 ${index+1}`;
             const imagePath = appState.currentDeck.deckInfo.imagePath + card.image;
@@ -180,6 +163,17 @@ document.addEventListener('DOMContentLoaded', () => {
             resultContainer.appendChild(cardContainer);
             elements.resultCards.appendChild(resultContainer);
 
+            // 커스텀 레이아웃 위치 적용
+            if (isCustom && appState.customLayout[index]) {
+                resultContainer.style.left = appState.customLayout[index].left;
+                resultContainer.style.top = appState.customLayout[index].top;
+            } else {
+                // 기본 레이아웃 (일렬 배치)
+                resultContainer.style.position = 'relative'; 
+            }
+            if(!isCustom) elements.resultCards.style.display = 'flex';
+
+
             setTimeout(() => cardContainer.classList.add('flipped'), 100 * (index + 1));
         });
         showScreen('result');
@@ -205,18 +199,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 5. 이벤트 핸들러 ---
-    
     elements.deckList.addEventListener('click', async (e) => {
         const deckCard = e.target.closest('.deck-card');
-        if (deckCard && await loadDeck(deckCard.dataset.deckId)) {
-            showScreen('spreadSelection');
-        }
+        if (deckCard && await loadDeck(deckCard.dataset.deckId)) showScreen('spreadSelection');
     });
     
     elements.spreadList.addEventListener('click', (e) => {
         const spreadButton = e.target.closest('.spread-button');
         if (!spreadButton) return;
-        
         const type = spreadButton.dataset.spreadType;
         if (type === 'custom') {
             setupCustomSpreadCreator(parseInt(elements.numCardsInput.value));
@@ -227,15 +217,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    elements.backButtons.forEach(button => {
-        button.addEventListener('click', () => showScreen(button.dataset.target));
-    });
-
+    elements.backButtons.forEach(b => b.addEventListener('click', () => showScreen(b.dataset.target)));
     elements.setCardCountButton.addEventListener('click', () => setupCustomSpreadCreator(parseInt(elements.numCardsInput.value)));
     
     let draggedItem = null;
+    let offsetX, offsetY;
+    const GRID_SIZE = 20; // 그리드 크기
     elements.layoutPreview.addEventListener('dragstart', e => {
         draggedItem = e.target;
+        offsetX = e.clientX - draggedItem.getBoundingClientRect().left;
+        offsetY = e.clientY - draggedItem.getBoundingClientRect().top;
         setTimeout(() => e.target.classList.add('dragging'), 0);
     });
     elements.layoutPreview.addEventListener('dragend', e => e.target.classList.remove('dragging'));
@@ -244,14 +235,17 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if(draggedItem) {
             const rect = elements.layoutPreview.getBoundingClientRect();
-            draggedItem.style.left = `${e.clientX - rect.left - (draggedItem.offsetWidth / 2)}px`;
-            draggedItem.style.top = `${e.clientY - rect.top - (draggedItem.offsetHeight / 2)}px`;
+            let x = e.clientX - rect.left - offsetX;
+            let y = e.clientY - rect.top - offsetY;
+            // 스냅 투 그리드 로직
+            draggedItem.style.left = `${Math.round(x / GRID_SIZE) * GRID_SIZE}px`;
+            draggedItem.style.top = `${Math.round(y / GRID_SIZE) * GRID_SIZE}px`;
         }
     });
     
     elements.startCustomSpreadButton.addEventListener('click', () => {
         const cards = elements.layoutPreview.querySelectorAll('.draggable-card');
-        appState.customLayout = Array.from(cards).map(c => ({
+        appState.customLayout = Array.from(cards).sort((a,b) => a.dataset.id - b.dataset.id).map(c => ({
             left: c.style.left,
             top: c.style.top,
         }));
@@ -267,18 +261,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const methodButton = e.target.closest('.draw-method-button');
         if (!methodButton) return;
         appState.drawMode = methodButton.dataset.mode;
-        
-        if (appState.drawMode === 'manual') {
-            setupManualDrawingScreen();
-        } else {
-            setupAutoDrawingScreen();
-        }
+        if (appState.drawMode === 'manual') setupManualDrawingScreen();
+        else setupAutoDrawingScreen();
     });
 
     elements.cardPool.addEventListener('click', (e) => {
         const cardContainer = e.target.closest('.card-container');
         if (!cardContainer) return;
-
         const index = cardContainer.dataset.cardIndex;
         if (appState.manuallySelectedCards.has(index)) {
             appState.manuallySelectedCards.delete(index);
@@ -294,31 +283,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     elements.manualResetButton.addEventListener('click', setupManualDrawingScreen);
     elements.manualConfirmButton.addEventListener('click', () => {
-        const drawnCards = Array.from(appState.manuallySelectedCards).map(i => appState.shuffledDeck[i]);
+        const drawnCards = Array.from(appState.manuallySelectedCards).map(i => appState.currentDeck.cards[i]);
         renderFinalResults(drawnCards);
     });
 
     elements.autoDrawButtons.addEventListener('click', (e) => {
         const button = e.target.closest('.auto-draw-button');
         if (!button || button.disabled) return;
-
         button.disabled = true;
         const card = appState.shuffledDeck.pop();
         appState.autoDrawnCards[button.dataset.index] = card;
-
         const allDrawn = elements.autoDrawButtons.querySelectorAll('button:not(:disabled)').length === 0;
         if (allDrawn) {
-            if (appState.drawMode === 'auto') {
-                setTimeout(() => renderFinalResults(appState.autoDrawnCards), 500);
-            } else {
-                renderContinuousResult();
-            }
+            if (appState.drawMode === 'auto') setTimeout(() => renderFinalResults(appState.autoDrawnCards), 500);
+            else renderContinuousResult();
         }
     });
 
     elements.autoResetButton.addEventListener('click', setupAutoDrawingScreen);
-
     elements.restartButton.addEventListener('click', resetAll);
     
-    loadDeck('universal_waite').then(() => console.log("기본 덱 로드 완료"));
+    loadDeck('universal_waite');
 });

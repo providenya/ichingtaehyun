@@ -28,6 +28,55 @@
       "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
     },
     {
+      "id": 3,
+      "name": "3. 여황제 (empress)",
+      "image": "empress.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
+      "id": 4,
+      "name": "4. 황제 (emperor)",
+      "image": "emperor.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
+      "id": 5,
+      "name": "5. 교황 (hierophant)",
+      "image": "hierophant.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
+      "id": 6,
+      "name": "6. 연인 (lovers)",
+      "image": "lovers.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
+      "id": 7,
+      "name": "7. 전차 (chariot)",
+      "image": "chariot.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
+      "id": 8,
+      "name": "8. 힘 (strength)",
+      "image": "strength.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
+      "id": 9,
+      "name": "9. 은둔자 (hermit)",
+      "image": "hermit.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
       "id": 10,
       "name": "10. 운명의 수레바퀴 (Wheel of Fortune)",
       "image": "wheel_of_fortune.jpg",
