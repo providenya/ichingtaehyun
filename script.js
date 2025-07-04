@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.autoDrawTitle.textContent = `${appState.currentSpread.name} (${appState.currentSpread.cards_to_draw}장)`;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button button'; // 비활성화 스타일을 위해 .button 클래스 제거
+            button.className = 'auto-draw-button button'; 
             button.textContent = i + 1; button.dataset.index = i;
             elements.autoDrawButtons.appendChild(button);
         }
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.continuousRound++;
         for (let i = 0; i < appState.currentSpread.cards_to_draw; i++) {
             const button = document.createElement('button');
-            button.className = 'auto-draw-button button'; // 비활성화 스타일을 위해 .button 클래스 제거
+            button.className = 'auto-draw-button button'; 
             button.textContent = i + 1; button.dataset.index = i;
             elements.continuousDrawButtons.appendChild(button);
         }
