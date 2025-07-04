@@ -1,0 +1,159 @@
+/* 기본 스타일 및 테마 */
+:root {
+    --bg-color: #1a1a2e;
+    --primary-color: #e94560;
+    --secondary-color: #16213e;
+    --font-color: #e0e0e0;
+    --card-bg: #0f3460;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+header, footer {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+h1, h2 {
+    color: var(--primary-color);
+}
+
+/* 화면 전환 관리 */
+.screen {
+    display: none; /* 기본적으로 모든 화면을 숨김 */
+    padding: 2rem;
+    animation: fadeIn 0.5s;
+}
+
+.screen.active {
+    display: block; /* active 클래스가 있는 화면만 보여줌 */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 덱 선택 화면 스타일 */
+#deck-list {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.deck-card {
+    background-color: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    width: 200px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.deck-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(233, 69, 96, 0.2);
+}
+
+/* 스프레드 버튼 스타일 */
+#spread-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.spread-button {
+    background-color: var(--card-bg);
+    color: var(--font-color);
+    border: 1px solid var(--primary-color);
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+    width: 250px;
+}
+
+.spread-button:hover {
+    background-color: var(--primary-color);
+}
+
+/* 카드 뽑기 및 결과 화면 스타일 */
+#card-pool, #result-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+    min-height: 200px; /* 카드가 들어갈 공간 확보 */
+}
+
+.card-back {
+    width: 100px;
+    height: 150px;
+    background-color: #535c68; /* 임시 카드 뒷면 색 */
+    border: 2px solid white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.card-back:hover {
+    transform: scale(1.05);
+}
+
+.result-card-container {
+    text-align: center;
+    width: 250px;
+}
+
+.result-card-position {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.card-front {
+    width: 120px;
+    height: 180px;
+    background-color: #f0f0f0;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    box-sizing: border-box; /* 패딩이 크기에 포함되도록 설정 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 다시 시작 버튼 */
+#restart-button {
+    margin-top: 2rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+#restart-button:hover {
+    background-color: #c33c51;
+}
