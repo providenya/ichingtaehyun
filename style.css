@@ -87,7 +87,7 @@ h1, h2 { color: var(--primary-color); }
 
 /* 최종 결과 화면 */
 #result-cards {
-    position: relative; max-width: 1000px; height: 100px; margin: 0 auto;
+    position: relative; max-width: 1000px; margin: 0 auto;
     display: flex; justify-content: center; align-items: center; gap: 1.5rem;
 }
 .result-card-container { text-align: center; width: var(--card-width-large); }
