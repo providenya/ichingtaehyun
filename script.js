@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         spreadSelection: document.getElementById('spread-selection-screen'),
         cardDrawing: document.getElementById('card-drawing-screen'),
         result: document.getElementById('result-screen'),
+        customSpreadCreator: document.getElementById('custom-spread-creator-screen'),
     };
     
     const deckList = document.getElementById('deck-list');
@@ -30,7 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultCardsContainer = document.getElementById('result-cards');
     const drawInstruction = document.getElementById('draw-instruction');
     const restartButton = document.getElementById('restart-button');
-
+    const setCardCountButton = document.getElementById('set-card-count-button');
+    const numCardsInput = document.getElementById('num-cards-input');
+    const positionInputsContainer = document.getElementById('position-inputs');
+    const previewGrid = document.getElementById('preview-grid');
+    const startCustomSpreadButton = document.getElementById('start-custom-spread-button');
+    const backToSpreadsButton = document.getElementById('back-to-spreads-button');
 
     // --- 2. 핵심 함수 ---
 
@@ -177,6 +183,36 @@ document.addEventListener('DOMContentLoaded', () => {
         showScreen('deckSelection');
     }
 
+    // 커스텀 유아이
+function setupCustomSpreadCreator(cardCount) {
+    positionInputsContainer.innerHTML = '';
+    previewGrid.innerHTML = '';
+    
+    // 유효성 검사
+    if (cardCount < 1 || cardCount > 20) {
+        alert("카드 수는 1장에서 20장 사이여야 합니다.");
+        numCardsInput.value = appState.currentDeck.cards.length > 3 ? 3 : 1;
+        return;
+    }
+
+    for (let i = 1; i <= cardCount; i++) {
+        // 1. 왼쪽: 의미 입력 필드 생성
+        const group = document.createElement('div');
+        group.classList.add('position-input-group');
+        group.innerHTML = `
+            <label for="pos-input-${i}">${i}.</label>
+            <input type="text" id="pos-input-${i}" placeholder="예: 현재 상황, 조언">
+        `;
+        positionInputsContainer.appendChild(group);
+
+        // 2. 오른쪽: 배치 미리보기 생성
+        const cell = document.createElement('div');
+        cell.classList.add('grid-cell');
+        cell.textContent = i;
+        previewGrid.appendChild(cell);
+    }
+}
+
 
     // --- 3. 이벤트 핸들러 ---
 
@@ -200,31 +236,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const spreadType = selectedSpreadButton.dataset.spreadType;
         
         if (spreadType === 'custom') {
-            // 커스텀 스프레드 로직 (간단한 prompt 사용)
-            const numCards = parseInt(prompt("몇 장의 카드를 뽑으시겠습니까?", "3"));
-            if (isNaN(numCards) || numCards <= 0) {
-                alert("유효한 숫자를 입력하세요.");
-                return;
-            }
-            let positions = [];
-            for (let i = 0; i < numCards; i++) {
-                const pos = prompt(`${i + 1}번째 카드의 의미는 무엇입니까?`, `위치 ${i+1}`);
-                positions.push(pos || `위치 ${i+1}`); // 입력이 없으면 기본값 사용
-            }
-            appState.currentSpread = { name: '커스텀 스프레드', cards_to_draw: numCards, positions: positions };
-        } else {
-            appState.currentSpread = SPREADS[spreadType];
-        }
-        
+          // prompt 대신 새로운 화면을 보여줍니다.
+        showScreen('customSpreadCreator');
+        // 기본값(3장)으로 생성기 UI를 초기 설정합니다.
+        setupCustomSpreadCreator(parseInt(numCardsInput.value));
+        // ----------------------------------------------------
+    } else {
+        appState.currentSpread = SPREADS[spreadType];
         appState.cardsToDraw = appState.currentSpread.cards_to_draw;
-        
-        // 카드 섞기
         shuffleDeck(appState.currentDeck.cards);
-        
-        // 카드 뽑기 화면으로 이동 및 설정
         setupCardDrawingScreen();
         showScreen('cardDrawing');
-    });
+    }
+});
     
     // 카드 선택 처리
 function handleCardSelection(e) {
@@ -268,6 +292,40 @@ function handleCardSelection(e) {
     // 다시 시작 버튼
     restartButton.addEventListener('click', resetApp);
     
+// '설정' 버튼 클릭 시: 입력된 카드 수에 맞춰 UI를 다시 그림
+setCardCountButton.addEventListener('click', () => {
+    const count = parseInt(numCardsInput.value);
+    setupCustomSpreadCreator(count);
+});
+
+// '뒤로가기' 버튼 클릭 시
+backToSpreadsButton.addEventListener('click', () => {
+    showScreen('spreadSelection');
+});
+
+// '이 스프레드로 점보기' 버튼 클릭 시
+startCustomSpreadButton.addEventListener('click', () => {
+    const numCards = positionInputsContainer.children.length;
+    let positions = [];
+    
+    for (let i = 1; i <= numCards; i++) {
+        const input = document.getElementById(`pos-input-${i}`);
+        positions.push(input.value || `카드 ${i}`); // 입력값이 없으면 기본값 사용
+    }
+    
+    appState.currentSpread = {
+        name: '나만의 커스텀 스프레드',
+        cards_to_draw: numCards,
+        positions: positions
+    };
+    
+    appState.cardsToDraw = numCards;
+    
+    shuffleDeck(appState.currentDeck.cards);
+    setupCardDrawingScreen();
+    showScreen('cardDrawing');
+});
+
     // --- 4. 초기화 ---
     resetApp(); // 앱 시작 시 초기 상태로 설정
 });

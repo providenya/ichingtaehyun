@@ -41,6 +41,34 @@
             </div>
         </div>
 
+        <!-- 화면 2-1: 커스텀 스프레드 생성기 -->
+        <div id="custom-spread-creator-screen" class="screen">
+            <h2>✨ 나만의 스프레드 만들기</h2>
+            <div class="creator-controls">
+                <label for="num-cards-input">1. 뽑을 카드 수:</label>
+                <input type="number" id="num-cards-input" min="1" max="20" value="3">
+                <button id="set-card-count-button">설정</button>
+            </div>
+            
+            <div class="creator-main">
+                <div id="position-editor">
+                    <h3>2. 각 위치의 의미를 입력하세요.</h3>
+                    <div id="position-inputs">
+                        <!-- JS가 여기에 입력 필드를 생성합니다. -->
+                    </div>
+                </div>
+                <div id="layout-preview">
+                    <h3>3. 카드 배치를 확인하세요.</h3>
+                    <div id="preview-grid">
+                        <!-- JS가 여기에 카드 위치를 생성합니다. -->
+                    </div>
+                </div>
+            </div>
+
+            <button id="start-custom-spread-button" class="action-button">이 스프레드로 점보기</button>
+            <button id="back-to-spreads-button" class="secondary-button">뒤로가기</button>
+        </div>
+
         <!-- 화면 3: 카드 뽑기 -->
         <div id="card-drawing-screen" class="screen">
             <h2>3. 카드를 선택하세요</h2>

@@ -241,3 +241,125 @@ h1, h2 {
     width: 100%;
     border-radius: 5px;
 }
+
+/* --- 커스텀 스프레드 생성기 스타일 --- */
+
+#custom-spread-creator-screen .creator-controls {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+#custom-spread-creator-screen input[type="number"] {
+    width: 60px;
+    padding: 0.5rem;
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+#custom-spread-creator-screen button {
+    background-color: var(--card-bg);
+    color: var(--font-color);
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#custom-spread-creator-screen button:hover {
+    background-color: var(--primary-color);
+}
+
+.creator-main {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+#position-editor, #layout-preview {
+    background-color: var(--secondary-color);
+    padding: 1.5rem;
+    border-radius: 10px;
+    flex-basis: 400px; /* 기본 너비 */
+}
+
+#position-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.position-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.position-input-group label {
+    font-weight: bold;
+    color: var(--primary-color);
+    width: 30px;
+}
+
+.position-input-group input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    border: 1px solid var(--card-bg);
+    border-radius: 4px;
+}
+
+#preview-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5x4 그리드 */
+    gap: 10px;
+    margin-top: 1rem;
+    background-color: var(--bg-color);
+    padding: 1rem;
+    border-radius: 5px;
+    min-height: 200px;
+}
+
+.grid-cell {
+    width: 60px;
+    height: 90px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px dashed var(--primary-color);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* 주요 액션 버튼 스타일 */
+.action-button {
+    margin-top: 2rem;
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border: none !important;
+    padding: 1rem 2rem !important;
+    font-size: 1.1rem !important;
+    transition: background-color 0.3s;
+}
+.action-button:hover {
+    background-color: #c33c51 !important;
+}
+
+.secondary-button {
+    margin-left: 1rem;
+    background-color: transparent !important;
+}
