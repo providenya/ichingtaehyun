@@ -180,6 +180,14 @@ document.addEventListener('DOMContentLoaded', () => {
             button.className = 'auto-draw-button button';
             button.textContent = i + 1; // 버튼에 1부터 시작하는 번호 표시
             button.dataset.index = i; // 나중에 뽑힌 카드를 저장할 배열의 인덱스
+
+            // --- 여기가 수정된 부분입니다 ---
+            // 첫 번째 버튼(i === 0)이 아니면 비활성화 상태로 시작합니다.
+            if (i !== 0) {
+                button.disabled = true;
+            }
+            // --- 수정 끝 ---
+
             elements.autoDrawButtons.appendChild(button);
         }
         showScreen('autoDrawing'); // 자동 뽑기 화면을 보여줍니다.
@@ -472,6 +480,14 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = true; // 클릭된 버튼을 비활성화
             const card = appState.shuffledDeck.pop(); // 섞인 덱에서 카드 한 장을 뽑음
             appState.autoDrawnCards[button.dataset.index] = card; // 해당 버튼의 인덱스에 카드 저장
+
+            // --- 여기가 수정된 부분입니다 ---
+            // 다음 버튼을 찾아 활성화하는 로직
+            const nextButton = button.nextElementSibling; // 현재 클릭한 버튼의 바로 다음 형제 요소를 찾습니다.
+            if (nextButton) { // 다음 버튼이 존재하면
+                nextButton.disabled = false; // 해당 버튼을 활성화합니다.
+            }
+            // --- 수정 끝 ---
 
             // 모든 버튼이 비활성화되었는지 (즉, 모든 카드를 뽑았는지) 확인
             const allDrawn = container.querySelectorAll('.auto-draw-button:not(:disabled)').length === 0;
