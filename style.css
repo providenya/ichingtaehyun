@@ -106,20 +106,24 @@ h1, h2 { color: var(--primary-color); }
 #result-custom-view .card-text-wrapper h4 { font-size: 0.7rem; }
 #result-custom-view .card-text-wrapper p { display: none; }
 
-/* --- 켈틱 크로스 뷰 수정된 코드 (7열 그리드) --- */
+/* 2. 켈틱 크로스 뷰 (grid-template-areas 사용) */
 
-/* 2. 켈틱 크로스 뷰 (CSS Grid로 변경) */
 #result-celtic-view.active {
     display: grid;
-    /* 7개의 열 생성. 카드(홀수 열)와 공간(짝수 열)을 정의합니다. */
-    /* 카드가 놓일 열(1,3,5,7)은 카드 너비만큼, 사이 공간(2,4,6)은 좁게 설정합니다. */
-    grid-template-columns: var(--card-width-small) 1rem var(--card-width-small) 1rem var(--card-width-small) 3rem 1fr;
-    grid-template-rows: repeat(4, auto); /* 4개의 행은 내용에 맞게 자동 높이 */
-    gap: 1.5rem 0; /* 행 사이 간격만 주고, 열 간격은 grid-template-columns로 제어 */
-    max-width: 800px; /* 레이아웃 너비를 조금 더 확보 */
-    margin: 2rem auto; /* 위아래 여백 추가 및 가운데 정렬 */
-    align-items: center; /* 행 내에서 세로 중앙 정렬 */
+    /* 4개의 열을 정의합니다. 중앙 십자가가 2,3열을 차지하고, 막대는 4열을 차지합니다. */
+    grid-template-columns: 1fr 1fr 1fr auto;
+    /* 각 영역의 이름을 시각적으로 정의합니다. '.'은 빈 공간을 의미합니다. */
+    grid-template-areas:
+        ".   top   .   staff4"
+        "left center right staff3"
+        ".   bottom .   staff2"
+        ".   .      .   staff1";
+    gap: 1.5rem 1rem; /* 행/열 사이의 간격 */
+    max-width: 700px;
+    margin: 2rem auto; /* 위아래 여백 추가 */
+    align-items: center; /* 행들을 수직으로 중앙 정렬 */
 }
+
 /* 켈틱 크로스 뷰의 카드 컨테이너 기본 스타일 */
 #result-celtic-view .result-card-container {
     position: relative;
@@ -130,50 +134,41 @@ h1, h2 { color: var(--primary-color); }
 #result-celtic-view .card-text-wrapper p { display: none; }
 
 
-/* 켈틱 크로스 전용 위치 (7열 Grid 배치) */
-/* 십자가(Cross) 부분 */
+/* 각 카드를 지정된 영역(area)에 배치합니다. */
 #result-celtic-view .result-card-container[data-position="1"] {
-    grid-column: 3; /* 3번째 열 (중심) */
-    grid-row: 2;    /* 2번째 행 */
+    grid-area: center; /* 'center' 영역에 배치 */
     z-index: 1;
 }
 #result-celtic-view .result-card-container[data-position="2"] {
-    grid-column: 3; /* 1번과 같은 위치 */
-    grid-row: 2;
+    grid-area: center; /* 1번 카드와 같은 'center' 영역에 배치하여 겹침 */
     transform: rotate(90deg);
     z-index: 2;
 }
 #result-celtic-view .result-card-container[data-position="3"] {
-    grid-column: 3; /* 3번째 열 */
-    grid-row: 3;    /* 3번째 행 (아래) */
+    grid-area: bottom; /* 'bottom' 영역 */
 }
 #result-celtic-view .result-card-container[data-position="4"] {
-    grid-column: 1; /* 1번째 열 (왼쪽) */
-    grid-row: 2;    /* 2번째 행 */
+    grid-area: left; /* 'left' 영역 */
+    justify-self: end; /* 셀의 오른쪽 끝에 정렬 */
 }
 #result-celtic-view .result-card-container[data-position="5"] {
-    grid-column: 3; /* 3번째 열 */
-    grid-row: 1;    /* 1번째 행 (위) */
+    grid-area: top; /* 'top' 영역 */
 }
 #result-celtic-view .result-card-container[data-position="6"] {
-    grid-column: 5; /* 5번째 열 (오른쪽) */
-    grid-row: 2;    /* 2번째 행 */
+    grid-area: right; /* 'right' 영역 */
+    justify-self: start; /* 셀의 왼쪽 끝에 정렬 */
 }
 
-/* 지팡이(Staff) 부분 - 오른쪽 세로 막대 */
+/* 오른쪽 막대(Staff) 부분 */
 #result-celtic-view .result-card-container[data-position="7"] {
-    grid-column: 7; /* 7번째 열 (가장 오른쪽) */
-    grid-row: 4;    /* 4번째 행 (가장 아래) */
+    grid-area: staff1; /* 'staff1' 영역 (가장 아래) */
 }
 #result-celtic-view .result-card-container[data-position="8"] {
-    grid-column: 7;
-    grid-row: 3;
+    grid-area: staff2;
 }
 #result-celtic-view .result-card-container[data-position="9"] {
-    grid-column: 7;
-    grid-row: 2;
+    grid-area: staff3;
 }
-#result-celt ic-view .result-card-container[data-position="10"] {
-    grid-column: 7;
-    grid-row: 1;
+#result-celtic-view .result-card-container[data-position="10"] {
+    grid-area: staff4; /* 'staff4' 영역 (가장 위) */
 }
