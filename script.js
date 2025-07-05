@@ -208,6 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
             button.className = 'auto-draw-button button';
             button.textContent = i + 1;
             button.dataset.index = i;
+
+            // --- 여기가 추가/수정된 부분입니다 ---
+            // 첫 번째 버튼(i === 0)이 아니면 비활성화 상태로 시작합니다.
+            if (i !== 0) {
+                button.disabled = true;
+            }
+            // --- 수정 끝 ---
+
             elements.continuousDrawButtons.appendChild(button);
         }
         showScreen('continuousDrawing'); // 연속 뽑기 화면을 보여줍니다.

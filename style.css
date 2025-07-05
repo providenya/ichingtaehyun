@@ -95,7 +95,7 @@ h1, h2 { color: var(--primary-color); }
 #result-custom-view { 
     position: relative; 
     max-width: 1000px; 
-    height: 700px;
+    height: 700px; /* 커스텀 뷰는 절대 위치를 사용하므로 높이 유지 */
     margin: 0 auto; 
 }
 #result-custom-view .result-card-container { 
@@ -106,69 +106,75 @@ h1, h2 { color: var(--primary-color); }
 #result-custom-view .card-text-wrapper h4 { font-size: 0.7rem; }
 #result-custom-view .card-text-wrapper p { display: none; }
 
-/* 2. 켈틱 크로스 뷰 (grid-template-areas 사용) */
 
+/* 2. 켈틱 크로스 뷰 (CSS Grid로 변경) */
 #result-celtic-view.active {
-    display: grid;
-    /* 4개의 열을 정의합니다. 중앙 십자가가 2,3열을 차지하고, 막대는 4열을 차지합니다. */
-    grid-template-columns: 1fr 1fr 1fr auto;
-    /* 각 영역의 이름을 시각적으로 정의합니다. '.'은 빈 공간을 의미합니다. */
-    grid-template-areas:
-        ".   top   .   staff4"
-        "left center right staff3"
-        ".   bottom .   staff2"
-        ".   .      .   staff1";
-    gap: 1.5rem 1rem; /* 행/열 사이의 간격 */
-    max-width: 700px;
-    margin: 2rem auto; /* 위아래 여백 추가 */
-    align-items: center; /* 행들을 수직으로 중앙 정렬 */
+    display: grid; /* 레이아웃을 CSS Grid로 변경 */
+    grid-template-columns: repeat(4, 1fr); /* 4개의 동일한 너비의 열(column) 생성 */
+    grid-template-rows: repeat(4, auto); /* 4개의 행(row)을 만들고 높이는 내용에 맞게 자동 조절 */
+    gap: 1.5rem 1rem; /* 행 사이 간격 1.5rem, 열 사이 간격 1rem */
+    max-width: 700px; /* 전체 레이아웃의 최대 너비 지정 */
+    margin: 0 auto; /* 가운데 정렬 */
+    place-items: center; /* 각 셀의 아이템을 중앙에 배치 */
 }
-
 /* 켈틱 크로스 뷰의 카드 컨테이너 기본 스타일 */
 #result-celtic-view .result-card-container {
-    position: relative;
+    position: relative; /* absolute 대신 relative로 변경 (기본값) */
     width: var(--card-width-small);
 }
-#result-celtic-view .card-flipper-wrapper { height: var(--card-height-small); }
+#result-celtic-view .card-flipper-wrapper {
+    height: var(--card-height-small);
+}
 #result-celtic-view .card-text-wrapper h4 { font-size: 0.7rem; }
-#result-celtic-view .card-text-wrapper p { display: none; }
+#result-celtic-view .card-text-wrapper p { display: none; } /* 키워드는 공간상 숨김 */
 
 
-/* 각 카드를 지정된 영역(area)에 배치합니다. */
+/* 켈틱 크로스 전용 위치 (Grid 배치) */
+/* 각 카드를 지정된 그리드 셀에 배치합니다. */
 #result-celtic-view .result-card-container[data-position="1"] {
-    grid-area: center; /* 'center' 영역에 배치 */
-    z-index: 1;
+    grid-column: 2; /* 2번째 열에 배치 */
+    grid-row: 2;    /* 2번째 행에 배치 */
+    z-index: 1;     /* 2번 카드 아래에 있도록 z-index 설정 */
 }
 #result-celtic-view .result-card-container[data-position="2"] {
-    grid-area: center; /* 1번 카드와 같은 'center' 영역에 배치하여 겹침 */
-    transform: rotate(90deg);
-    z-index: 2;
+    grid-column: 2; /* 1번 카드와 같은 2번째 열에 배치 */
+    grid-row: 2;    /* 1번 카드와 같은 2번째 행에 배치 (겹침) */
+    transform: rotate(90deg); /* 90도 회전 */
+    z-index: 2;     /* 1번 카드 위에 있도록 z-index 설정 */
 }
 #result-celtic-view .result-card-container[data-position="3"] {
-    grid-area: bottom; /* 'bottom' 영역 */
+    grid-column: 2; /* 2번째 열 */
+    grid-row: 3;    /* 3번째 행 (1,2번 카드 아래) */
 }
 #result-celtic-view .result-card-container[data-position="4"] {
-    grid-area: left; /* 'left' 영역 */
-    justify-self: end; /* 셀의 오른쪽 끝에 정렬 */
+    grid-column: 1; /* 1번째 열 (1,2번 카드 왼쪽) */
+    grid-row: 2;    /* 2번째 행 */
+    justify-self: end; /* 셀의 오른쪽 끝에 붙임 */
 }
 #result-celtic-view .result-card-container[data-position="5"] {
-    grid-area: top; /* 'top' 영역 */
+    grid-column: 2; /* 2번째 열 */
+    grid-row: 1;    /* 1번째 행 (1,2번 카드 위) */
 }
 #result-celtic-view .result-card-container[data-position="6"] {
-    grid-area: right; /* 'right' 영역 */
-    justify-self: start; /* 셀의 왼쪽 끝에 정렬 */
+    grid-column: 3; /* 3번째 열 (1,2번 카드 오른쪽) */
+    grid-row: 2;    /* 2번째 행 */
+    justify-self: start; /* 셀의 왼쪽 끝에 붙임 */
 }
 
-/* 오른쪽 막대(Staff) 부분 */
+/* 오른쪽 세로 막대 (Staff) */
 #result-celtic-view .result-card-container[data-position="7"] {
-    grid-area: staff1; /* 'staff1' 영역 (가장 아래) */
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 4;    /* 4번째 행 (가장 아래) */
 }
 #result-celtic-view .result-card-container[data-position="8"] {
-    grid-area: staff2;
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 3;    /* 3번째 행 */
 }
 #result-celtic-view .result-card-container[data-position="9"] {
-    grid-area: staff3;
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 2;    /* 2번째 행 */
 }
 #result-celtic-view .result-card-container[data-position="10"] {
-    grid-area: staff4; /* 'staff4' 영역 (가장 위) */
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 1;    /* 1번째 행 (가장 위) */
 }
