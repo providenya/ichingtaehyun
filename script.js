@@ -128,15 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 1; i <= cardCount; i++) {
             const cell = document.createElement('div');
 
-        // 새 코드:
-        cell.className = 'draggable-card';
-        cell.dataset.id = i;
-        cell.draggable = true;
-        cell.innerHTML = `
-            <div class="placeholder-image">${i}</div>
-            <div class="placeholder-text">위치 ${i}</div>
-        `;
-        // --- 여기까지 수정 ---
+            // 새 코드:
+            cell.className = 'draggable-card';
+            cell.dataset.id = i;
+            cell.draggable = true;
+            cell.innerHTML = `
+                <div class="placeholder-image">${i}</div>
+                <div class="placeholder-text">위치 ${i}</div>
+            `;
+            // --- 수정 끝 ---
 
             cell.style.left = `${(i - 1) * 110}px`;
             cell.style.top = `20px`;
