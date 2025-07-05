@@ -107,80 +107,88 @@ h1, h2 { color: var(--primary-color); }
 #result-custom-view .card-text-wrapper p { display: none; }
 
 
-/* 2. 켈틱 크로스 뷰 (CSS Grid로 재조정) */
+/* 2. 켈틱 크로스 뷰 (4x4 Grid 유지) */
 #result-celtic-view.active {
     display: grid;
-    /* 5개의 열(column)을 생성합니다. 중앙(3번째) 열을 조금 더 넓게 설정합니다. */
-    grid-template-columns: 1fr 1fr 1.2fr 1fr 1fr; 
-    /* 5개의 행(row)을 생성합니다. */
-    grid-template-rows: repeat(5, auto);
-    gap: 1rem; /* 셀 사이의 간격 */
-    max-width: 800px; /* 전체 레이아웃 너비 조정 */
-    margin: 2rem auto; /* 위아래 여백 추가 및 가운데 정렬 */
-    align-items: center; /* 행 방향으로 아이템을 중앙에 배치 */
+    /* 4개의 열을 생성합니다. 중앙 두 열(2,3)에 조금 더 넓은 공간을 줍니다. */
+    grid-template-columns: 1fr 1.2fr 1.2fr 1fr;
+    /* 4개의 행을 생성합니다. 중앙 두 행(2,3)의 최소 높이를 카드보다 크게 설정합니다. */
+    grid-template-rows: repeat(2, auto) repeat(2, auto);
+    gap: 0.5rem; /* 셀 사이의 간격을 줄여 겹치는 효과를 돕습니다. */
+    max-width: 700px;
+    margin: 2rem auto;
+    align-items: center;
 }
 /* 켈틱 크로스 뷰의 카드 컨테이너 기본 스타일 */
 #result-celtic-view .result-card-container {
-    position: relative; /* absolute 대신 relative로 변경 (기본값) */
+    position: relative;
     width: var(--card-width-small);
 }
 #result-celtic-view .card-flipper-wrapper {
     height: var(--card-height-small);
 }
 #result-celtic-view .card-text-wrapper h4 { font-size: 0.7rem; }
-#result-celtic-view .card-text-wrapper p { display: none; } /* 키워드는 공간상 숨김 */
+#result-celtic-view .card-text-wrapper p { display: none; }
 
 
-/* 켈틱 크로스 전용 위치 (5x5 Grid 기반) */
-/* grid-column/row: 시작라인 / 끝라인 형태로 지정하여 셀에 걸치게 만듭니다. */
+/* 켈틱 크로스 전용 위치 (4x4 Grid 기반) */
+/* 중앙 십자가를 2,3번 열과 2,3번 행에 걸쳐 배치합니다. */
 #result-celtic-view .result-card-container[data-position="1"] {
-    grid-column: 3 / 4; /* 3번 열 라인에서 시작해서 4번 열 라인에서 끝남 (즉, 3번 열 차지) */
-    grid-row: 3 / 4;    /* 3번 행 라인에서 시작해서 4번 행 라인에서 끝남 (즉, 3번 행 차지) */
+    grid-column: 2 / 4; /* 2,3번 열에 걸쳐 중앙에 배치 */
+    grid-row: 2 / 4;    /* 2,3번 행에 걸쳐 중앙에 배치 */
+    justify-self: center;
+    align-self: center;
     z-index: 1;
-    justify-self: center; /* 셀 내에서 가로 중앙 정렬 */
 }
 #result-celtic-view .result-card-container[data-position="2"] {
-    grid-column: 3 / 4;
-    grid-row: 3 / 4;
+    grid-column: 2 / 4;
+    grid-row: 2 / 4;
+    justify-self: center;
+    align-self: center;
     transform: rotate(90deg);
     z-index: 2;
-    justify-self: center;
 }
 #result-celtic-view .result-card-container[data-position="3"] {
-    grid-column: 3 / 4;
-    grid-row: 4 / 6; /* 4번 행 라인에서 시작, 6번 라인(맨끝)에서 끝나 2개의 행에 걸침 */
-    align-self: start; /* 셀의 시작점(위)에 붙임 */
+    grid-column: 2 / 4; /* 중앙 두 열에 걸쳐 배치 */
+    grid-row: 3 / 5;    /* 3,4번 행에 걸쳐 배치 */
+    justify-self: center; /* 가로 중앙 */
+    align-self: start;    /* 시작점(위)에 붙임 */
 }
 #result-celtic-view .result-card-container[data-position="4"] {
-    grid-column: 2 / 3; /* 2번 열 라인 ~ 3번 열 라인 (2번 열 차지) */
-    grid-row: 3 / 4;
-    justify-self: end; /* 셀의 오른쪽 끝에 붙임 */
+    grid-column: 1 / 3; /* 1,2번 열에 걸쳐 배치 */
+    grid-row: 2 / 4;    /* 중앙 두 행에 걸쳐 배치 */
+    justify-self: end; /* 끝점(오른쪽)에 붙임 */
+    align-self: center; /* 세로 중앙 */
 }
 #result-celtic-view .result-card-container[data-position="5"] {
-    grid-column: 3 / 4;
-    grid-row: 1 / 3; /* 1번 행 라인 ~ 3번 행 라인 (2개의 행에 걸침) */
-    align-self: end; /* 셀의 끝(아래)에 붙임 */
+    grid-column: 2 / 4; /* 중앙 두 열에 걸쳐 배치 */
+    grid-row: 1 / 3;    /* 1,2번 행에 걸쳐 배치 */
+    justify-self: center;
+    align-self: end; /* 끝점(아래)에 붙임 */
 }
 #result-celtic-view .result-card-container[data-position="6"] {
-    grid-column: 4 / 5; /* 4번 열 라인 ~ 5번 열 라인 (4번 열 차지) */
-    grid-row: 3 / 4;
-    justify-self: start; /* 셀의 왼쪽 끝에 붙임 */
+    grid-column: 3 / 5; /* 3,4번 열에 걸쳐 배치 */
+    grid-row: 2 / 4;    /* 중앙 두 행에 걸쳐 배치 */
+    justify-self: start; /* 시작점(왼쪽)에 붙임 */
+    align-self: center;
 }
 
-/* 오른쪽 세로 막대 (Staff) */
+/* 오른쪽 세로 막대 (Staff) - 4번째 열에 배치 */
 #result-celtic-view .result-card-container[data-position="7"] {
-    grid-column: 5; /* 5번째 열에 배치 */
-    grid-row: 5;    /* 5번째 행에 배치 */
+    grid-column: 4;
+    grid-row: 4;
+    align-self: center;
 }
 #result-celtic-view .result-card-container[data-position="8"] {
-    grid-column: 5;
-    grid-row: 4;
-}
-#result-celtic-view .result-card-container[data-position="9"] {
-    grid-column: 5;
+    grid-column: 4;
     grid-row: 3;
 }
-#result-celtic-view .result-card-container[data-position="10"]{
-    grid-column: 5;
+#result-celtic-view .result-card-container[data-position="9"] {
+    grid-column: 4;
     grid-row: 2;
+}
+#result-celtic-view .result-card-container[data-position="10"]{
+    grid-column: 4;
+    grid-row: 1;
+    align-self: center;
 }
