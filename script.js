@@ -127,11 +127,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // 지정된 개수만큼 드래그 가능한 카드 요소를 생성합니다.
         for (let i = 1; i <= cardCount; i++) {
             const cell = document.createElement('div');
-            cell.className = 'draggable-card';
-            cell.dataset.id = i; // 카드 번호 저장
-            cell.textContent = i;
-            cell.draggable = true; // 드래그 가능하도록 설정
-            // 초기 위치를 설정합니다.
+
+        // 새 코드:
+        cell.className = 'draggable-card';
+        cell.dataset.id = i;
+        cell.draggable = true;
+        cell.innerHTML = `
+            <div class="placeholder-image">${i}</div>
+            <div class="placeholder-text">위치 ${i}</div>
+        `;
+        // --- 여기까지 수정 ---
+
             cell.style.left = `${(i - 1) * 110}px`;
             cell.style.top = `20px`;
             elements.layoutPreview.appendChild(cell);

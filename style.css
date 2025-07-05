@@ -37,8 +37,41 @@ h1, h2 { color: var(--primary-color); }
 #spread-list, #draw-method-list { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 /* 커스텀 스프레드 생성기의 레이아웃 미리보기 영역 */
 #layout-preview { position: relative; height: 600px; background-color: var(--secondary-color); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; border-radius: 10px; margin: 2rem auto; max-width: 800px; } /* 20px 간격의 그리드 배경 */
-.draggable-card { position: absolute; width: var(--card-width-small); height: var(--card-height-small); background-color: var(--card-bg); border: 1px dashed var(--primary-color); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: var(--primary-color); cursor: grab; }
-.draggable-card.dragging { opacity: 0.5; cursor: grabbing; } /* 드래그 중인 카드 스타일 */
+
+/* 기존 .draggable-card 스타일을 찾아서 아래 내용으로 교체합니다. */
+.draggable-card {
+    position: absolute;
+    /* width와 height를 직접 지정하는 대신, 내용물과 padding으로 크기가 결정되도록 합니다. */
+    background-color: var(--secondary-color); /* 결과 카드와 동일한 배경색 */
+    border: 1px solid var(--primary-color);   /* 결과 카드와 동일한 테두리 */
+    border-radius: 10px;                      /* 결과 카드와 동일한 모서리 둥글기 */
+    padding: 1rem;                            /* 결과 카드와 동일한 안쪽 여백 */
+    box-sizing: border-box;                   /* 패딩과 테두리를 크기 계산에 포함 */
+    cursor: grab;
+    text-align: center;
+}
+.draggable-card.dragging { opacity: 0.5; cursor: grabbing; }
+
+/* 아래 새로운 스타일을 추가합니다. */
+.placeholder-image {
+    height: var(--card-height-small); /* 실제 카드 이미지 높이와 동일하게 설정 (가장 중요) */
+    border: 2px dashed var(--primary-color);
+    border-radius: 8px;
+    margin-bottom: 0.5rem; /* 실제 카드 이미지와 텍스트 사이 간격과 동일하게 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+.placeholder-text {
+    color: var(--primary-color);
+    font-weight: bold;
+    padding-top: 0.5rem; /* 실제 카드 텍스트의 상단 여백과 동일하게 설정 */
+    font-size: 0.7rem;   /* 실제 카드 텍스트의 폰트 크기와 동일하게 설정 */
+    line-height: 1.2;    /* 텍스트가 차지하는 최소 높이를 보장 */
+}
+
 .top-controls { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
 /* 수동 뽑기 카드 풀 */
 #card-pool { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
