@@ -1,0 +1,556 @@
+{
+  "deckInfo": {
+    "name": "유니버설 웨이트",
+    "cardCount": 78,
+    "imagePath": "assets/images/universal_waite/",
+    "backImage": "back.jpg"
+  },
+  "cards": [
+    {
+      "id": 0,
+      "name": "0. 광대 (The Fool)",
+      "image": "fool.jpg",
+      "keywords": ["시작", "순수", "자유", "모험"],
+      "description": "새로운 시작, 미지의 세계로 떠나는 순수한 열정을 상징합니다."
+    },
+    {
+      "id": 1,
+      "name": "1. 마법사 (The Magician)",
+      "image": "magician.jpg",
+      "keywords": ["창조", "의지", "재능", "능력"],
+      "description": "당신이 가진 재능과 능력으로 원하는 것을 창조할 수 있는 힘이 있음을 의미합니다."
+    },
+    {
+      "id": 2,
+      "name": "2. 고위 여사제 (The High Priestess)",
+      "image": "high_priestess.jpg",
+      "keywords": ["지혜", "직관", "비밀", "내면"],
+      "description": "드러나지 않은 진실과 내면의 목소리에 귀를 기울여야 할 때임을 암시합니다."
+    },
+    {
+      "id": 3,
+      "name": "3. 여황제 (The Empress)",
+      "image": "empress.jpg",
+      "keywords": ["풍요", "모성", "창조", "안정"],
+      "description": "풍요와 안정, 물질적, 정신적 만족을 상징하는 카드입니다."
+    },
+    {
+      "id": 4,
+      "name": "4. 황제 (The Emperor)",
+      "image": "emperor.jpg",
+      "keywords": ["권위", "통제", "질서", "리더십"],
+      "description": "강력한 리더십과 통제력으로 안정을 이루는 것을 의미합니다."
+    },
+    {
+      "id": 5,
+      "name": "5. 교황 (The Hierophant)",
+      "image": "hierophant.jpg",
+      "keywords": ["전통", "자비", "가르침", "신념"],
+      "description": "전통적인 가치와 신념, 혹은 정신적 스승의 가르침이 필요한 시기입니다."
+    },
+    {
+      "id": 6,
+      "name": "6. 연인 (The Lovers)",
+      "image": "lovers.jpg",
+      "keywords": ["관계", "선택", "조화", "사랑"],
+      "description": "중요한 선택의 기로에 놓여있거나, 깊은 관계의 시작을 의미합니다."
+    },
+    {
+      "id": 7,
+      "name": "7. 전차 (The Chariot)",
+      "image": "chariot.jpg",
+      "keywords": ["승리", "의지", "추진력", "자신감"],
+      "description": "강력한 의지와 추진력으로 목표를 향해 돌진하여 승리를 쟁취함을 상징합니다."
+    },
+    {
+      "id": 8,
+      "name": "8. 힘 (Strength)",
+      "image": "strength.jpg",
+      "keywords": ["내면의 힘", "용기", "인내", "조절"],
+      "description": "외적인 힘이 아닌, 부드러움과 인내를 통한 내면의 힘으로 상황을 다스립니다."
+    },
+    {
+      "id": 9,
+      "name": "9. 은둔자 (The Hermit)",
+      "image": "hermit.jpg",
+      "keywords": ["성찰", "탐구", "지혜", "고독"],
+      "description": "세상과 거리를 두고 자신의 내면을 깊이 성찰하며 지혜를 찾는 시간입니다."
+    },
+    {
+      "id": 10,
+      "name": "10. 운명의 수레바퀴 (Wheel of Fortune)",
+      "image": "wheel_of_fortune.jpg",
+      "keywords": ["운명", "변화", "전환점", "기회"],
+      "description": "인생의 중요한 전환점에 있으며, 곧 긍정적인 변화가 시작될 것임을 나타냅니다."
+    },
+    {
+      "id": 11,
+      "name": "11. 정의 (Justice)",
+      "image": "justice.jpg",
+      "keywords": ["균형", "공정", "결정", "책임"],
+      "description": "공정하고 이성적인 판단이 필요한 시기이며, 자신의 행동에 대한 책임을 져야 합니다."
+    },
+    {
+      "id": 12,
+      "name": "12. 매달린 남자 (The Hanged Man)",
+      "image": "hanged_man.jpg",
+      "keywords": ["희생", "인내", "깨달음", "다른 관점"],
+      "description": "상황을 다른 관점으로 바라보며, 더 큰 깨달음을 위해 현재의 희생을 감수해야 합니다."
+    },
+    {
+      "id": 13,
+      "name": "13. 죽음 (Death)",
+      "image": "death.jpg",
+      "keywords": ["끝", "변화", "종결", "새로운 시작"],
+      "description": "물리적 죽음이 아닌, 낡은 것의 종결과 피할 수 없는 변화, 새로운 시작을 의미합니다."
+    },
+    {
+      "id": 14,
+      "name": "14. 절제 (Temperance)",
+      "image": "temperance.jpg",
+      "keywords": ["조화", "균형", "통합", "절제"],
+      "description": "서로 다른 것들을 조화롭게 통합하여 균형을 찾아야 할 때입니다."
+    },
+    {
+      "id": 15,
+      "name": "15. 악마 (The Devil)",
+      "image": "devil.jpg",
+      "keywords": ["속박", "중독", "욕망", "물질주의"],
+      "description": "물질적 욕망이나 잘못된 관계에 얽매여 있음을 경고하는 카드입니다."
+    },
+    {
+      "id": 16,
+      "name": "16. 탑 (The Tower)",
+      "image": "tower.jpg",
+      "keywords": ["급작스러운 변화", "파괴", "붕괴", "깨달음"],
+      "description": "기존의 믿음이나 구조가 무너지는 갑작스러운 변화와 충격을 의미합니다."
+    },
+    {
+      "id": 17,
+      "name": "17. 별 (The Star)",
+      "image": "star.jpg",
+      "keywords": ["희망", "치유", "영감", "긍정"],
+      "description": "어려움 끝에 찾아온 희망과 긍정적인 미래에 대한 믿음을 상징합니다."
+    },
+    {
+      "id": 18,
+      "name": "18. 달 (The Moon)",
+      "image": "moon.jpg",
+      "keywords": ["불안", "환상", "무의식", "혼란"],
+      "description": "불안과 두려움, 드러나지 않은 진실로 인해 혼란스러운 상황을 나타냅니다."
+    },
+    {
+      "id": 19,
+      "name": "19. 태양 (The Sun)",
+      "image": "sun.jpg",
+      "keywords": ["성공", "긍정", "활기", "기쁨"],
+      "description": "성공과 기쁨, 긍정적인 에너지가 가득한 행복한 시기임을 의미합니다."
+    },
+    {
+      "id": 20,
+      "name": "20. 심판 (Judgement)",
+      "image": "judgement.jpg",
+      "keywords": ["부활", "결산", "새로운 단계", "용서"],
+      "description": "과거를 돌아보고 중요한 결정을 내려 새로운 단계로 나아가야 할 때입니다."
+    },
+    {
+      "id": 21,
+      "name": "21. 세계 (The World)",
+      "image": "world.jpg",
+      "keywords": ["완성", "성취", "통합", "여행"],
+      "description": "하나의 주기가 성공적으로 완성되고, 새로운 세상으로 나아감을 상징합니다."
+    },
+    {
+      "id": 22,
+      "name": "지팡이 에이스 (Ace of Wands)",
+      "image": "ace_of_wands.jpg",
+      "keywords": ["새로운 시작", "열정", "창의력", "영감"],
+      "description": "새로운 열정과 창의적인 에너지가 시작됨을 알립니다."
+    },
+    {
+      "id": 23,
+      "name": "지팡이 2 (Two of Wands)",
+      "image": "two_of_wands.jpg",
+      "keywords": ["계획", "선택", "미래", "가능성"],
+      "description": "미래를 향한 계획을 세우고 새로운 가능성을 탐색하는 시기입니다."
+    },
+    {
+      "id": 24,
+      "name": "지팡이 3 (Three of Wands)",
+      "image": "three_of_wands.jpg",
+      "keywords": ["확장", "기다림", "원정", "비전"],
+      "description": "초기 계획이 성과를 보이며 더 넓은 세상으로 나아가기 위해 준비합니다."
+    },
+    {
+      "id": 25,
+      "name": "지팡이 4 (Four of Wands)",
+      "image": "four_of_wands.jpg",
+      "keywords": ["안정", "축하", "결실", "가정"],
+      "description": "노력의 결실을 축하하며 안정되고 평화로운 시기를 즐깁니다."
+    },
+    {
+      "id": 26,
+      "name": "지팡이 5 (Five of Wands)",
+      "image": "five_of_wands.jpg",
+      "keywords": ["경쟁", "갈등", "다툼", "혼란"],
+      "description": "사소한 의견 충돌이나 건전한 경쟁이 발생하는 혼란스러운 상황입니다."
+    },
+    {
+      "id": 27,
+      "name": "지팡이 6 (Six of Wands)",
+      "image": "six_of_wands.jpg",
+      "keywords": ["승리", "성공", "인정", "자신감"],
+      "description": "많은 사람들의 인정과 축하 속에서 승리의 기쁨을 만끽합니다."
+    },
+    {
+      "id": 28,
+      "name": "지팡이 7 (Seven of Wands)",
+      "image": "seven_of_wands.jpg",
+      "keywords": ["방어", "도전", "용기", "신념"],
+      "description": "자신의 신념이나 입지를 지키기 위해 용감하게 맞서 싸워야 합니다."
+    },
+    {
+      "id": 29,
+      "name": "지팡이 8 (Eight of Wands)",
+      "image": "eight_of_wands.jpg",
+      "keywords": ["속도", "급한 소식", "진행", "여행"],
+      "description": "상황이 빠르게 진행되거나 중요한 소식이 곧 도착함을 암시합니다."
+    },
+    {
+      "id": 30,
+      "name": "지팡이 9 (Nine of Wands)",
+      "image": "nine_of_wands.jpg",
+      "keywords": ["경계", "인내", "방어", "지침"],
+      "description": "힘든 싸움 끝에 지쳐있지만, 마지막까지 경계를 늦추지 말아야 합니다."
+    },
+    {
+      "id": 31,
+      "name": "지팡이 10 (Ten of Wands)",
+      "image": "ten_of_wands.jpg",
+      "keywords": ["부담", "책임", "과로", "압박"],
+      "description": "너무 많은 책임과 부담감으로 인해 힘겨운 상황에 처해있습니다."
+    },
+    {
+      "id": 32,
+      "name": "지팡이 시종 (Page of Wands)",
+      "image": "page_of_wands.jpg",
+      "keywords": ["열정적인 시작", "호기심", "새로운 아이디어", "탐험"],
+      "description": "새로운 아이디어를 탐험하고 열정적으로 배우려는 호기심 많은 인물입니다."
+    },
+    {
+      "id": 33,
+      "name": "지팡이 기사 (Knight of Wands)",
+      "image": "knight_of_wands.jpg",
+      "keywords": ["행동력", "모험", "자신감", "성급함"],
+      "description": "자신감 넘치고 저돌적으로 행동하지만, 때로는 성급할 수 있습니다."
+    },
+    {
+      "id": 34,
+      "name": "지팡이 여왕 (Queen of Wands)",
+      "image": "queen_of_wands.jpg",
+      "keywords": ["매력", "자신감", "열정", "사교성"],
+      "description": "자신감 있고 사교적이며, 주변에 긍정적인 에너지를 전파하는 인물입니다."
+    },
+    {
+      "id": 35,
+      "name": "지팡이 왕 (King of Wands)",
+      "image": "king_of_wands.jpg",
+      "keywords": ["리더십", "비전", "통찰력", "카리스마"],
+      "description": "타고난 리더십과 비전으로 사람들을 이끄는 카리스마 있는 인물입니다."
+    },
+    {
+      "id": 36,
+      "name": "컵 에이스 (Ace of Cups)",
+      "image": "ace_of_cups.jpg",
+      "keywords": ["사랑", "감정의 시작", "새로운 관계", "기쁨"],
+      "description": "새로운 감정이 싹트거나 정서적으로 충만해지는 시기입니다."
+    },
+    {
+      "id": 37,
+      "name": "컵 2 (Two of Cups)",
+      "image": "two_of_cups.jpg",
+      "keywords": ["파트너십", "교감", "결합", "사랑의 시작"],
+      "description": "두 사람 사이의 감정적 교류와 파트너십의 시작을 의미합니다."
+    },
+    {
+      "id": 38,
+      "name": "컵 3 (Three of Cups)",
+      "image": "three_of_cups.jpg",
+      "keywords": ["축하", "우정", "기쁨", "사교 모임"],
+      "description": "친구들과 함께 기쁨을 나누고 축하할 일이 생김을 암시합니다."
+    },
+    {
+      "id": 39,
+      "name": "컵 4 (Four of Cups)",
+      "image": "four_of_cups.jpg",
+      "keywords": ["권태", "무관심", "불만", "새로운 기회"],
+      "description": "현실에 만족하지 못하고 권태를 느끼며, 새로운 기회를 알아보지 못하고 있습니다."
+    },
+    {
+      "id": 40,
+      "name": "컵 5 (Five of Cups)",
+      "image": "five_of_cups.jpg",
+      "keywords": ["실망", "상실", "후회", "슬픔"],
+      "description": "잃어버린 것에 대한 슬픔과 후회에 빠져, 남은 가능성을 보지 못합니다."
+    },
+    {
+      "id": 41,
+      "name": "컵 6 (Six of Cups)",
+      "image": "six_of_cups.jpg",
+      "keywords": ["추억", "순수함", "과거", "향수"],
+      "description": "과거의 즐거웠던 추억에 잠기거나, 오래된 인연과 재회할 수 있습니다."
+    },
+    {
+      "id": 42,
+      "name": "컵 7 (Seven of Cups)",
+      "image": "seven_of_cups.jpg",
+      "keywords": ["환상", "선택", "욕심", "비현실적"],
+      "description": "너무 많은 선택지와 환상 속에서 현실적인 결정을 내리기 어렵습니다."
+    },
+    {
+      "id": 43,
+      "name": "컵 8 (Eight of Cups)",
+      "image": "eight_of_cups.jpg",
+      "keywords": ["떠남", "탐색", "미련", "새로운 길"],
+      "description": "정서적 만족을 찾아 현재의 상황을 뒤로하고 새로운 길을 떠납니다."
+    },
+    {
+      "id": 44,
+      "name": "컵 9 (Nine of Cups)",
+      "image": "nine_of_cups.jpg",
+      "keywords": ["소원 성취", "만족", "기쁨", "행복"],
+      "description": "감정적으로나 물질적으로 원하는 바를 이루어 만족스러운 상태입니다."
+    },
+    {
+      "id": 45,
+      "name": "컵 10 (Ten of Cups)",
+      "image": "ten_of_cups.jpg",
+      "keywords": ["가정의 행복", "조화", "완성", "정서적 안정"],
+      "description": "가족과 함께 완벽한 행복과 정서적 안정을 누리는 상태를 의미합니다."
+    },
+    {
+      "id": 46,
+      "name": "컵 시종 (Page of Cups)",
+      "image": "page_of_cups.jpg",
+      "keywords": ["새로운 감정", "직관", "상상력", "로맨틱한 제안"],
+      "description": "새로운 감정의 시작을 알리거나, 창의적이고 감수성이 풍부한 인물입니다."
+    },
+    {
+      "id": 47,
+      "name": "컵 기사 (Knight of Cups)",
+      "image": "knight_of_cups.jpg",
+      "keywords": ["로맨스", "제안", "매력", "이상주의"],
+      "description": "로맨틱하고 이상적인 제안을 하거나, 감성적인 접근을 하는 인물입니다."
+    },
+    {
+      "id": 48,
+      "name": "컵 여왕 (Queen of Cups)",
+      "image": "queen_of_cups.jpg",
+      "keywords": ["공감", "직관", "자비", "감성"],
+      "description": "타인의 감정에 깊이 공감하고, 따뜻한 마음으로 돌보는 자비로운 인물입니다."
+    },
+    {
+      "id": 49,
+      "name": "컵 왕 (King of Cups)",
+      "image": "king_of_cups.jpg",
+      "keywords": ["감정적 성숙", "통제력", "자비", "지혜"],
+      "description": "감정을 잘 다스리면서도 타인에게 자비를 베풀 줄 아는 성숙한 인물입니다."
+    },
+    {
+      "id": 50,
+      "name": "검 에이스 (Ace of Swords)",
+      "image": "ace_of_swords.jpg",
+      "keywords": ["새로운 아이디어", "진실", "명확함", "결단"],
+      "description": "새로운 아이디어가 떠오르거나 진실을 명확하게 깨닫게 되는 순간입니다."
+    },
+    {
+      "id": 51,
+      "name": "검 2 (Two of Swords)",
+      "image": "two_of_swords.jpg",
+      "keywords": ["교착 상태", "결정 보류", "균형", "회피"],
+      "description": "어려운 결정 앞에서 진실을 외면하고, 결정을 내리지 못하는 상태입니다."
+    },
+    {
+      "id": 52,
+      "name": "검 3 (Three of Swords)",
+      "image": "three_of_swords.jpg",
+      "keywords": ["상처", "슬픔", "이별", "고통"],
+      "description": "마음의 상처나 슬픔, 고통스러운 진실과 마주해야 하는 상황입니다."
+    },
+    {
+      "id": 53,
+      "name": "검 4 (Four of Swords)",
+      "image": "four_of_swords.jpg",
+      "keywords": ["휴식", "회복", "명상", "재충전"],
+      "description": "갈등과 스트레스에서 벗어나 재충전을 위한 휴식이 필요한 시기입니다."
+    },
+    {
+      "id": 54,
+      "name": "검 5 (Five of Swords)",
+      "image": "five_of_swords.jpg",
+      "keywords": ["패배", "갈등", "굴욕", "상처뿐인 승리"],
+      "description": "승리하더라도 상처만 남는 갈등이나, 패배로 인한 굴욕감을 의미합니다."
+    },
+    {
+      "id": 55,
+      "name": "검 6 (Six of Swords)",
+      "image": "six_of_swords.jpg",
+      "keywords": ["이동", "변화", "회복", "슬픈 여정"],
+      "description": "어려운 상황에서 벗어나 더 나은 곳으로 이동하며 점차 회복됩니다."
+    },
+    {
+      "id": 56,
+      "name": "검 7 (Seven of Swords)",
+      "image": "seven_of_swords.jpg",
+      "keywords": ["기만", "배신", "전략", "도피"],
+      "description": "정직하지 못한 방법으로 무언가를 얻거나, 책임을 회피하려는 상황입니다."
+    },
+    {
+      "id": 57,
+      "name": "검 8 (Eight of Swords)",
+      "image": "eight_of_swords.jpg",
+      "keywords": ["속박", "제한", "무력감", "자기 구속"],
+      "description": "스스로 만든 생각의 감옥에 갇혀 무력감을 느끼는 상황입니다."
+    },
+    {
+      "id": 58,
+      "name": "검 9 (Nine of Swords)",
+      "image": "nine_of_swords.jpg",
+      "keywords": ["걱정", "불면", "죄책감", "불안"],
+      "description": "걱정과 불안, 죄책감으로 인해 밤에 잠 못 이루는 고통을 겪고 있습니다."
+    },
+    {
+      "id": 59,
+      "name": "검 10 (Ten of Swords)",
+      "image": "ten_of_swords.jpg",
+      "keywords": ["끝", "파멸", "배신", "절망"],
+      "description": "고통스러운 상황이 최악의 상태로 끝나지만, 동시에 새로운 시작을 암시합니다."
+    },
+    {
+      "id": 60,
+      "name": "검 시종 (Page of Swords)",
+      "image": "page_of_swords.jpg",
+      "keywords": ["호기심", "정보", "분석", "경계"],
+      "description": "호기심이 많고 진실을 탐구하며, 주변을 경계하는 예리한 인물입니다."
+    },
+    {
+      "id": 61,
+      "name": "검 기사 (Knight of Swords)",
+      "image": "knight_of_swords.jpg",
+      "keywords": ["저돌적", "급진적", "논리", "무모함"],
+      "description": "목표를 향해 빠르고 저돌적으로 돌진하지만, 무모하고 냉정할 수 있습니다."
+    },
+    {
+      "id": 62,
+      "name": "검 여왕 (Queen of Swords)",
+      "image": "queen_of_swords.jpg",
+      "keywords": ["지성", "독립심", "솔직함", "냉철함"],
+      "description": "지적이고 독립적이며, 감정에 치우치지 않는 냉철한 판단력을 가졌습니다."
+    },
+    {
+      "id": 63,
+      "name": "검 왕 (King of Swords)",
+      "image": "king_of_swords.jpg",
+      "keywords": ["권위", "지성", "공정함", "결단력"],
+      "description": "최고의 지성과 권위를 바탕으로 공정하고 현명한 결정을 내리는 인물입니다."
+    },
+    {
+      "id": 64,
+      "name": "펜타클 에이스 (Ace of Pentacles)",
+      "image": "ace_of_pentacles.jpg",
+      "keywords": ["새로운 기회", "물질적 시작", "풍요", "안정"],
+      "description": "금전, 사업 등 현실적인 새로운 기회가 주어짐을 의미합니다."
+    },
+    {
+      "id": 65,
+      "name": "펜타클 2 (Two of Pentacles)",
+      "image": "two_of_pentacles.jpg",
+      "keywords": ["균형", "유연성", "우선순위", "조절"],
+      "description": "여러 가지 일을 동시에 처리하며 유연하게 균형을 맞춰가고 있습니다."
+    },
+    {
+      "id": 66,
+      "name": "펜타클 3 (Three of Pentacles)",
+      "image": "three_of_pentacles.jpg",
+      "keywords": ["협력", "팀워크", "기술", "계획"],
+      "description": "팀워크를 통해 자신의 기술을 발휘하여 좋은 성과를 만들어 냅니다."
+    },
+    {
+      "id": 67,
+      "name": "펜타클 4 (Four of Pentacles)",
+      "image": "four_of_pentacles.jpg",
+      "keywords": ["소유욕", "안정 추구", "인색함", "보수적"],
+      "description": "안정을 위해 가진 것을 놓지 않으려 하지만, 지나친 소유욕을 경계해야 합니다."
+    },
+    {
+      "id": 68,
+      "name": "펜타클 5 (Five of Pentacles)",
+      "image": "five_of_pentacles.jpg",
+      "keywords": ["경제적 어려움", "궁핍", "소외감", "고난"],
+      "description": "재정적 어려움이나 건강 문제로 인해 힘들고 소외감을 느끼는 시기입니다."
+    },
+    {
+      "id": 69,
+      "name": "펜타클 6 (Six of Pentacles)",
+      "image": "six_of_pentacles.jpg",
+      "keywords": ["자선", "나눔", "도움", "균형"],
+      "description": "도움을 주거나 받으며, 물질적, 정신적 나눔의 균형을 이룹니다."
+    },
+    {
+      "id": 70,
+      "name": "펜타클 7 (Seven of Pentacles)",
+      "image": "seven_of_pentacles.jpg",
+      "keywords": ["인내", "수확", "평가", "기다림"],
+      "description": "장기적인 노력의 결과를 기다리며, 현재까지의 성과를 평가하는 시기입니다."
+    },
+    {
+      "id": 71,
+      "name": "펜타클 8 (Eight of Pentacles)",
+      "image": "eight_of_pentacles.jpg",
+      "keywords": ["장인정신", "성실함", "기술 연마", "노력"],
+      "description": "자신의 기술을 연마하기 위해 성실하게 노력하고 있음을 나타냅니다."
+    },
+    {
+      "id": 72,
+      "name": "펜타클 9 (Nine of Pentacles)",
+      "image": "nine_of_pentacles.jpg",
+      "keywords": ["자수성가", "풍요", "독립", "여유"],
+      "description": "스스로의 노력으로 이룬 풍요와 성공을 여유롭게 즐기는 상태입니다."
+    },
+    {
+      "id": 73,
+      "name": "펜타클 10 (Ten of Pentacles)",
+      "image": "ten_of_pentacles.jpg",
+      "keywords": ["부유함", "가족의 유산", "안정", "성공"],
+      "description": "물질적 풍요와 가족의 안정을 이루어 만족스러운 상태임을 나타냅니다."
+    },
+    {
+      "id": 74,
+      "name": "펜타클 시종 (Page of Pentacles)",
+      "image": "page_of_pentacles.jpg",
+      "keywords": ["새로운 기회", "배움", "성실함", "현실적"],
+      "description": "현실적인 목표를 위해 성실하게 배우고 새로운 기회를 모색합니다."
+    },
+    {
+      "id": 75,
+      "name": "펜타클 기사 (Knight of Pentacles)",
+      "image": "knight_of_pentacles.jpg",
+      "keywords": ["책임감", "성실함", "신중함", "꾸준함"],
+      "description": "믿음직하고 성실하며, 목표를 향해 꾸준히 나아가는 인물입니다."
+    },
+    {
+      "id": 76,
+      "name": "펜타클 여왕 (Queen of Pentacles)",
+      "image": "queen_of_pentacles.jpg",
+      "keywords": ["현실 감각", "풍요", "안정", "자애로움"],
+      "description": "현실적이고 안정적이며, 주변을 풍요롭고 따뜻하게 돌보는 인물입니다."
+    },
+    {
+      "id": 77,
+      "name": "펜타클 왕 (King of Pentacles)",
+      "image": "king_of_pentacles.jpg",
+      "keywords": ["사업적 성공", "안정", "부유함", "책임감"],
+      "description": "사업적 수완이 뛰어나 큰 성공과 부를 이룬 안정적이고 책임감 있는 인물입니다."
+    }
+  ]
+}
