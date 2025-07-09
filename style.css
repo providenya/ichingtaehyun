@@ -1,0 +1,447 @@
+/* 기본 스타일 및 테마 */
+:root {
+    /* CSS 변수를 선언하여 색상, 크기 등 테마 관련 값을 관리합니다. */
+    --bg-color: #1a1a2e; /* 배경색 */
+    --primary-color: #e94560; /* 주요 강조색 */
+    --secondary-color: #16213e; /* 보조 배경색 (헤더, 카드 컨테이너 등) */
+    --font-color: #e0e0e0; /* 기본 글자색 */
+    --card-bg: #0f3460; /* 카드 배경색 (버튼 등) */
+    --card-width-small: 90px; /* 작은 카드 너비 (켈틱, 커스텀) */
+    --card-height-small: calc(var(--card-width-small) * 1.5); /* 작은 카드 높이 */
+    --card-width-large: 160px; /* 큰 카드 너비 (기본 결과) */
+    --card-height-large: calc(var(--card-width-large) * 1.5); /* 큰 카드 높이 */
+}
+body { background-color: var(--bg-color); color: var(--font-color); font-family: 'Malgun Gothic', sans-serif; margin: 0; text-align: center; }
+header, footer { background-color: var(--secondary-color); padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+h1, h2 { color: var(--primary-color); }
+.screen { display: none; padding: 2rem; animation: fadeIn 0.5s; position: relative; }
+.screen.active { display: block; } /* .active 클래스가 있는 화면만 보여줍니다. */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } /* 화면 전환 시 부드러운 효과 */
+
+/* 버튼 스타일 (공통) */
+.button { background-color: var(--card-bg); color: var(--font-color); border: 1px solid var(--primary-color); padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer; font-size: 1rem; transition: background-color 0.3s; margin-bottom: 1rem; }
+.button:hover { background-color: var(--primary-color); } /* 마우스 올렸을 때 색상 변경 */
+.spread-button, .draw-method-button { width: 280px; } /* 스프레드, 뽑기 방식 버튼 너비 고정 */
+.back-button, .top-controls .button, #set-card-count-button { width: auto; margin-bottom: 0; }
+.back-button { position: absolute; top: 1.5rem; left: 1.5rem; } /* 뒤로가기 버튼 위치 */
+#set-card-count-button { margin-left: 0.5rem; }
+/* '결과 확인', '이 스프레드로 점보기' 등 주요 액션 버튼 스타일 */
+.action-button { background-color: var(--primary-color); color: white; border: none; padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+.action-button:hover { background-color: #c33c51; }
+.action-button:disabled { background-color: #555; cursor: not-allowed; } /* 비활성화 시 스타일 */
+
+/* 덱 선택 ~ 뽑기 화면 */
+#deck-list { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+.deck-card { background-color: var(--card-bg); border: 2px solid var(--primary-color); border-radius: 10px; padding: 1.5rem; width: 200px; cursor: pointer; transition: transform 0.3s; }
+.deck-card:hover { transform: translateY(-10px); } /* 마우스 올렸을 때 위로 살짝 이동 */
+#spread-list, #draw-method-list { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+/* 커스텀 스프레드 생성기의 레이아웃 미리보기 영역 */
+#layout-preview { position: relative; height: 800px; background-color: var(--secondary-color); background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; border-radius: 10px; margin: 2rem auto; max-width: 900px; } /* 20px 간격의 그리드 배경 */
+
+/* 기존 .draggable-card 스타일을 찾아서 아래 내용으로 교체합니다. */
+.draggable-card {
+    position: absolute;
+    /* width와 height를 직접 지정하는 대신, 내용물과 padding으로 크기가 결정되도록 합니다. */
+    background-color: var(--secondary-color); /* 결과 카드와 동일한 배경색 */
+    border: 1px solid var(--primary-color);   /* 결과 카드와 동일한 테두리 */
+    border-radius: 10px;                      /* 결과 카드와 동일한 모서리 둥글기 */
+    padding: 0.2rem;                            /* 결과 카드와 동일한 안쪽 여백 */
+    box-sizing: border-box;                   /* 패딩과 테두리를 크기 계산에 포함 */
+    cursor: grab;
+    text-align: center;
+    width: var(--card-width-small); /* <<<--- 너비를 명시적으로 지정하여 크기 일치 */
+}
+.draggable-card.dragging { opacity: 0.5; cursor: grabbing; }
+
+/* 아래 새로운 스타일을 추가합니다. */
+.placeholder-image {
+    height: var(--card-height-small); /* 실제 카드 이미지 높이와 동일하게 설정 (가장 중요) */
+    border: 2px dashed var(--primary-color);
+    border-radius: 8px;
+    margin-bottom: 0.1rem; /* 실제 카드 이미지와 텍스트 사이 간격과 동일하게 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+.placeholder-text {
+    color: var(--primary-color);
+    font-weight: bold;
+    padding-top: 0.1rem; /* 실제 카드 텍스트의 상단 여백과 동일하게 설정 */
+    font-size: 0.7rem;   /* 실제 카드 텍스트의 폰트 크기와 동일하게 설정 */
+    line-height: 1;    /* 텍스트가 차지하는 최소 높이를 보장 */
+    margin: 0 0 0.3rem 0;/* <<<--- h4 태그의 기본 마진을 모방하여 추가 */
+    display: block;      /* <<<--- h4 태그처럼 블록 요소로 변경 */
+}
+
+.placeholder-name-text {
+    color: var(--primary-color);
+    font-size: 0.7rem; /* 위치 텍스트와 동일한 크기 */
+    margin-top: 0.3rem; /* 이미지 영역과 간격 띄우기 */
+    word-break: keep-all;
+    line-height: 1.3; /* [핵심] 줄 간격을 추가하여 가독성을 높입니다. */
+}
+
+.top-controls { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
+
+/* 수동 뽑기 카드 풀 */
+#card-pool { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+
+/* 1. 컨테이너는 바깥쪽 테두리와 배경을 담당합니다. */
+#card-pool .card-container {
+    width: var(--card-width-small);
+    height: var(--card-height-small);
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    background-color: var(--secondary-color);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* 옅은 회색 테두리 */
+    border-radius: 10px;
+    padding: 0.2rem; /* 안쪽 콘텐츠와의 여백 */
+    box-sizing: border-box;
+}
+
+/* 2. 컨테이너 내부의 실제 이미지 스타일 (이제 숨기지 않습니다!) */
+#card-pool .card-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px; /* 컨테이너보다 약간 작은 둥글기 */
+}
+
+/* 3. 이미지가 없을 때 교체될 대체 콘텐츠(플레이스홀더) 스타일 */
+.card-pool-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem; /* 아이콘 크기 */
+    color: var(--primary-color);
+    opacity: 0.7;
+}
+
+/* 4. 선택된 카드의 스타일 */
+#card-pool .card-container.selected {
+    transform: translateY(-10px);
+    border-color: var(--primary-color); /* 테두리를 분홍색으로 변경 */
+    box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+}
+
+/* 4. 자동 연속뽑기의 스타일 */
+#auto-draw-buttons, #continuous-draw-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.auto-draw-button {
+    width: var(--card-width-small);
+    height: var(--card-height-small);
+}
+
+.auto-draw-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* 연속 뽑기 결과 영역 */
+#continuous-result-area { display: flex; flex-direction: column-reverse; gap: 2rem; } /* 새로운 결과가 아래에 추가되도록 역순 정렬 */
+.continuous-result-set { border-top: 2px solid var(--primary-color); padding-top: 2rem; }
+.continuous-result-cards { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; align-items: flex-start; }
+#continuous-result-area .result-card-container { width: var(--card-width-small); }
+#continuous-result-area .result-card-position { font-size: 0.8rem; }
+#continuous-result-area .card-image-wrapper { height: var(--card-height-small); margin-bottom: 0.5rem; }
+#continuous-result-area .card-image-wrapper img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; }
+#continuous-result-area .card-text-wrapper h4 { font-size: 0.8rem; margin: 0; }
+
+/* --- 최종 결과 화면 스타일 분리 및 수정 --- */
+.result-view { display: none; }
+.result-view.active { display: block; } /* 현재 활성화된 결과 뷰만 표시 */
+
+/* 결과 카드 컨테이너 공통 스타일 (요청사항 2번) */
+.result-card-container {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    padding: 0.2rem;
+    box-sizing: border-box; /* 패딩과 테두리를 너비/높이에 포함 */
+    text-align: center;
+}
+.result-card-position { font-weight: bold; color: var(--primary-color); margin-top: 0; margin-bottom: 0.1rem; }
+/* 카드 뒤집기(플립) 애니메이션 스타일 */
+.card-flipper-wrapper { perspective: 1000px; margin-bottom: 0.1rem; } /* 3D 효과를 위한 원근감 설정 */
+.card-flipper { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; } /* 3D 변환 유지 */
+.card-flipper-wrapper.flipped .card-flipper { transform: rotateY(180deg); } /* .flipped 클래스 추가 시 Y축으로 180도 회전 */
+.card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; overflow: hidden; } /* 뒷면 숨기기 */
+.card-face img { width: 100%; height: 100%; object-fit: cover; }
+.card-face.front { transform: rotateY(180deg); background-color: var(--secondary-color); } /* 앞면은 미리 180도 회전된 상태 */
+.card-text-wrapper { padding-top: 0.1rem; }
+/* 요구사항 1번: 카드 이름이 길어도 줄바꿈되어 잘리지 않도록 함 */
+.card-text-wrapper h4 { font-size: 0.9rem; margin: 0 0 0.3rem 0; color: var(--primary-color); word-break: keep-all; } /* 단어 단위로 줄바꿈 */
+.card-text-wrapper p { font-size: 0.8rem; margin: 0; }
+
+/* 1. 기본 결과 뷰 (원 카드, 쓰리 카드 등) - 큰 카드 사용 */
+#result-default-view.active { display: flex; justify-content: center; align-items: flex-start; gap: 1.5rem; padding: 2rem 0; }
+#result-default-view .result-card-container { width: var(--card-width-large); }
+#result-default-view .card-flipper-wrapper { height: var(--card-height-large); }
+
+/* --- 켈틱 크로스 & 커스텀 뷰 수정된 코드 --- */
+
+/* 커스텀 결과 뷰 (기존과 동일) */
+#result-custom-view { 
+    position: relative; 
+    max-width: 1000px; 
+    height: 700px; /* 커스텀 뷰는 절대 위치를 사용하므로 높이 유지 */
+    margin: 0 auto; 
+}
+
+#result-custom-view .result-card-position {
+    font-size: 0.7rem; /* 카드 이름과 동일한 크기로 조절 */
+}
+
+#result-custom-view .result-card-container { 
+    position: absolute; 
+    width: var(--card-width-small); 
+}
+#result-custom-view .card-flipper-wrapper { height: var(--card-height-small); }
+#result-custom-view .card-text-wrapper h4 { font-size: 0.7rem; }
+#result-custom-view .card-text-wrapper p { display: none; }
+
+
+/* 2. 켈틱 크로스 뷰 (CSS Grid로 변경) */
+#result-celtic-view.active {
+    display: grid; /* 레이아웃을 CSS Grid로 변경 */
+    grid-template-columns: repeat(4, 1fr); /* 4개의 동일한 너비의 열(column) 생성 */
+    grid-template-rows: repeat(4, auto); /* 4개의 행(row)을 만들고 높이는 내용에 맞게 자동 조절 */
+    gap: 1.5rem 1rem; /* 행 사이 간격 1.5rem, 열 사이 간격 1rem */
+    max-width: 700px; /* 전체 레이아웃의 최대 너비 지정 */
+    margin: 0 auto; /* 가운데 정렬 */
+    place-items: center; /* 각 셀의 아이템을 중앙에 배치 */
+}
+/* 켈틱 크로스 뷰의 카드 컨테이너 기본 스타일 */
+#result-celtic-view .result-card-container {
+    position: relative; /* absolute 대신 relative로 변경 (기본값) */
+    width: var(--card-width-small);
+}
+
+#result-celtic-view .result-card-position {
+    font-size: 0.7rem; /* 카드 이름과 동일한 크기로 조절 */
+}
+
+#result-celtic-view .card-flipper-wrapper {
+    height: var(--card-height-small);
+}
+#result-celtic-view .card-text-wrapper h4 { font-size: 0.7rem; }
+#result-celtic-view .card-text-wrapper p { display: none; } /* 키워드는 공간상 숨김 */
+
+
+/* 켈틱 크로스 전용 위치 (Grid 배치) */
+/* 각 카드를 지정된 그리드 셀에 배치합니다. */
+#result-celtic-view .result-card-container[data-position="1"] {
+    grid-column: 2; /* 2번째 열에 배치 */
+    grid-row: 2;    /* 2번째 행에 배치 */
+    z-index: 1;     /* 2번 카드 아래에 있도록 z-index 설정 */
+}
+#result-celtic-view .result-card-container[data-position="2"] {
+    grid-column: 2; /* 1번 카드와 같은 2번째 열에 배치 */
+    grid-row: 2;    /* 1번 카드와 같은 2번째 행에 배치 (겹침) */
+    transform: rotate(90deg); /* 90도 회전 */
+    z-index: 2;     /* 1번 카드 위에 있도록 z-index 설정 */
+}
+#result-celtic-view .result-card-container[data-position="3"] {
+    grid-column: 2; /* 2번째 열 */
+    grid-row: 3;    /* 3번째 행 (1,2번 카드 아래) */
+}
+#result-celtic-view .result-card-container[data-position="4"] {
+    grid-column: 1; /* 1번째 열 (1,2번 카드 왼쪽) */
+    grid-row: 2;    /* 2번째 행 */
+    justify-self: end; /* 셀의 오른쪽 끝에 붙임 */
+}
+#result-celtic-view .result-card-container[data-position="5"] {
+    grid-column: 2; /* 2번째 열 */
+    grid-row: 1;    /* 1번째 행 (1,2번 카드 위) */
+}
+#result-celtic-view .result-card-container[data-position="6"] {
+    grid-column: 3; /* 3번째 열 (1,2번 카드 오른쪽) */
+    grid-row: 2;    /* 2번째 행 */
+    justify-self: start; /* 셀의 왼쪽 끝에 붙임 */
+}
+
+/* 오른쪽 세로 막대 (Staff) */
+#result-celtic-view .result-card-container[data-position="7"] {
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 4;    /* 4번째 행 (가장 아래) */
+}
+#result-celtic-view .result-card-container[data-position="8"] {
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 3;    /* 3번째 행 */
+}
+#result-celtic-view .result-card-container[data-position="9"] {
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 2;    /* 2번째 행 */
+}
+#result-celtic-view .result-card-container[data-position="10"] {
+    grid-column: 4; /* 4번째 열 */
+    grid-row: 1;    /* 1번째 행 (가장 위) */
+}
+
+
+/* --- 이미지가 없는 카드를 위한 대체 스타일 --- */
+.card-front-no-image {
+    width: 100%;
+    height: 100%;
+    background-color: var(--secondary-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px; /* .card-face와 동일하게 맞춤 */
+    box-sizing: border-box;
+    padding: 1rem 0.5rem;
+
+    /* 내부 콘텐츠(심볼, 이름)를 세로/가로 중앙에 배치 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.no-image-symbol {
+    font-size: 2.5rem; /* 심볼 크기 */
+    color: var(--primary-color);
+    opacity: 0.7;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.no-image-name {
+    font-size: 0.9rem; /* 카드 이름 폰트 크기 */
+    color: var(--font-color);
+    margin: 0;
+    font-weight: bold;
+    word-break: keep-all; /* 긴 이름 줄바꿈 처리 */
+}
+
+/* 큰 카드(기본 뷰)에서는 폰트를 더 크게 */
+#result-default-view .no-image-symbol {
+    font-size: 4rem;
+}
+#result-default-view .no-image-name {
+    font-size: 1.2rem;
+}
+
+/* [추가] 카드 뒷면 에러 시 대체 스타일 */
+.card-back-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    opacity: 0.7;
+    background: linear-gradient(135deg, var(--secondary-color) 25%, var(--card-bg) 100%);
+}
+
+/* --- [추가] 유니코드 덱을 위한 카드 앞면 스타일 --- */
+.card-front-unicode {
+    width: 100%;
+    height: 100%;
+    background-color: var(--secondary-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.unicode-symbol {
+    font-size: 60px; /* 괘 모양 크기를 크게 */
+    line-height: 1;
+    color: var(--font-color);
+}
+
+/* 큰 카드(기본 뷰)에서는 괘 모양을 더 크게 */
+#result-default-view .unicode-symbol {
+    font-size: 110px;
+}
+
+/* --- [추가] 카드 상세 설명(description) 스타일 --- */
+/* 1. 키워드 스타일 */
+.result-card-container .keywords {
+    font-size: 0.8rem;         /* 키워드 폰트 크기 */
+    font-weight: bold;         /* [핵심] 키워드는 '굵게' */
+    color: #aaa;
+    margin: 0.3rem 0;
+    line-height: 1.3;
+}
+
+/* 2. 설명 스타일 */
+.result-card-container .description {
+    display: none;             /* 기본적으로 숨김 */
+    font-size: 0.75rem;        /* 키워드보다 약간 더 작은 크기 */
+    font-weight: normal;       /* [핵심] 설명은 '일반 굵기' */
+    color: var(--font-color);
+    margin: 0.5rem 0.2rem 0 0.2rem;
+    line-height: 1.4;
+    word-break: keep-all;
+    opacity: 0.9;
+}
+
+/* 3. 원/쓰리 카드 뷰(#result-default-view) 안에서만 description을 보여줍니다. */
+#result-default-view .result-card-container .description {
+    display: block;
+}
+
+
+/* --- [추가] 결과창 확대/축소/이동 스타일 --- */
+
+/* 1. 확대/축소/이동의 대상이 될 컨테이너 */
+#zoom-pan-container {
+    width: 100%;
+    height: 100%;
+    cursor: grab; /* 마우스를 올리면 잡는 손 모양으로 변경 */
+    transition: transform 0.2s ease-in-out; /* 부드러운 확대/축소 효과 */
+    /* 결과가 화면 중앙에서부터 커지도록 설정 */
+    transform-origin: center center;
+}
+/* 드래그(이동) 중일 때의 커서 모양 */
+#zoom-pan-container.panning {
+    cursor: grabbing;
+}
+
+
+/* 2. 화면에 떠다니는 컨트롤 버튼 컨테이너 */
+#zoom-controls {
+    position: fixed; /* 화면에 고정 */
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100; /* 다른 요소들 위에 보이도록 설정 */
+    display: flex;
+    flex-direction: column; /* 버튼들을 세로로 정렬 */
+    gap: 0.5rem;
+}
+
+/* 3. 개별 컨트롤 버튼 스타일 */
+.zoom-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* 동그랗게 만들기 */
+    font-size: 1.5rem;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+}
+
+/* --- [추가] 이미지 저장 중 로딩 스타일 --- */
+body.capturing {
+    cursor: wait; /* 커서를 로딩 모양으로 변경 */
+}
